@@ -12,6 +12,8 @@
  var status=document.getElementById('status'),retry=document.getElementById('retry');
  function boot(){
   retry.hidden=true;status.textContent='Загружаю актуальную версию игры…';
+  try{var k='cc14Pre2DBoot',v=localStorage.getItem('crimecitysave5'),p=v?JSON.parse(v):null;if(!localStorage.getItem(k)&&p&&Array.isArray(p.owned)&&p.owned.some(Boolean)&&Number.isFinite(+p.wallet)){var snapshot={kind:'CrimeCityPortableSave',v:1,data:{}};for(var j=0;j<localStorage.length;j++){var kk=localStorage.key(j);if(kk&&kk.startsWith('crimecity'))snapshot.data[kk]=localStorage.getItem(kk)}localStorage.setItem(k,JSON.stringify(snapshot))}}catch(e){}
+
   fetch('./game.html?fresh='+Date.now(),{cache:'no-store'}).then(function(r){
    if(!r.ok)throw new Error('HTTP '+r.status);return r.text()
   }).then(function(html){
