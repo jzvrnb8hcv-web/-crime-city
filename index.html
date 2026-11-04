@@ -4,16 +4,16 @@
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Crime City">
 <meta name="theme-color" content="#0a1828">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<link rel="manifest" href="./manifest.webmanifest"><title>SKORBININ Crime City 12.0</title>
+<link rel="manifest" href="./manifest.webmanifest"><title>SKORBININ Crime City 12.1</title>
 <style>html,body{margin:0;width:100%;height:100%;background:#071422;color:#f9d897;font-family:system-ui,-apple-system,Arial;display:grid;place-items:center;text-align:center}main{padding:25px}h1{letter-spacing:.08em;font-size:26px}p{color:#bfcbd9;line-height:1.6}button{border:1px solid #d2ab67;color:#ffe3b3;background:#1a3046;padding:13px 22px;border-radius:12px;font:700 16px system-ui}</style>
-</head><body><main><h1>CRIME CITY 12.0</h1><p id="status">Загружаю стабильную Crime City 12.0…</p><button id="retry" hidden>Повторить загрузку</button></main>
+</head><body><main><h1>CRIME CITY 12.1</h1><p id="status">Загружаю стабильную Crime City 12.1…</p><button id="retry" hidden>Повторить загрузку</button></main>
 <style>
 #safeRecovery{display:none;position:fixed;inset:0;background:#071422;color:#eff2f3;z-index:9999;overflow:auto;text-align:left;font:15px system-ui;padding:22px;box-sizing:border-box}
 #safeRecovery .wrap{max-width:550px;margin:auto}#safeRecovery textarea{box-sizing:border-box;min-height:145px;width:100%;background:#132c42;color:white;border:1px solid #9aa5b7;border-radius:11px;padding:12px;font:12px monospace;touch-action:auto;-webkit-user-select:text;user-select:text}
 #safeRecovery button{display:block;width:100%;margin:11px 0}#safeRecovery p{line-height:1.5}#safeRecovery .note{color:#ffd99b}
 </style>
 <section id="safeRecovery"><div class="wrap">
-<h2>💾 CRIME CITY 12.0 · ЗАЩИТА ПРОГРЕССА</h2>
+<h2>💾 CRIME CITY 12.1 · ЗАЩИТА ПРОГРЕССА</h2>
 <p id="safeStatus"></p>
 <p class="note">Перед запуском игры обнаружено неполное сохранение. Чтобы не заменить купленные машины стартовыми данными, игра пока не загружается. Основной профиль и твой резервный код не удалены.</p>
 <button id="safeLocal">🛟 ПОИСК РЕЗЕРВНОЙ КОПИИ</button>
@@ -62,11 +62,11 @@ function recovery(){
  $('safeStatus').textContent='Сейчас на этом iPhone видно '+count+'/6 машин, баланс '+(Number.isFinite(+current?.wallet)?Number(current.wallet).toLocaleString('ru-RU')+' ₽':'неизвестен')+'.';
 }
 function launch(){
- retry.hidden=true;status.textContent='Загружаю стабильную Crime City 12.0…';
+ retry.hidden=true;status.textContent='Загружаю стабильную Crime City 12.1…';
  try{if(!localStorage.getItem('cc14Pre2DBoot')&&good(read('crimecitysave5')))localStorage.setItem('cc14Pre2DBoot',JSON.stringify(snapshot()))}catch(e){}
  fetch('./game.html?fresh='+Date.now(),{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('HTTP '+r.status);return r.text()}).then(html=>{
  if(html.length<20000||!/<html[\s>]/i.test(html)||!/<\/html>/i.test(html))throw Error('Получен неполный файл игры');
- html=html.replace(/<\/body>/i,'<scr'+'ipt src="./rescue2d.js?v=1"></scr'+'ipt></body>');
+ // 12.1 uses the game's native Save/Progress control; remove duplicate floating rescue button.
  document.open();document.write(html);document.close()
  }).catch(e=>{status.textContent='Не удалось загрузить игру: '+e.message;retry.hidden=false})
 }
