@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, user-scalable=no">
 <meta name="theme-color" content="#08121e">
-<title>SKORBININ: CRIME CITY 12.1</title>
+<title>SKORBININ: CRIME CITY 12.2</title>
 <style>
 :root{color-scheme:dark}
 *{box-sizing:border-box}
@@ -76,6 +76,8 @@ h2{font-size:30px;line-height:1.1;margin:12px 0 8px}
 
 /* Persistent in-app backup and owner recovery controls */
 #saveToolsBtn{position:fixed;left:auto;right:12px;top:calc(env(safe-area-inset-top) + 192px);z-index:10;padding:7px 9px;font-size:10px;opacity:.75;background:#122b42ed;color:#f2d7a6;border:1px solid #d7a76588;border-radius:15px;font-weight:800;box-shadow:0 4px 15px #0008;cursor:pointer}
+#story12hud{display:none!important}
+#saveToolsBtn{right:9px;top:calc(env(safe-area-inset-top) + 177px);z-index:15}
 #saveToolsModal{display:none;position:fixed;inset:0;z-index:90;background:#050b16f2;align-items:center;justify-content:center;padding:18px;overflow:auto}
 #saveToolsModal.open{display:flex}
 #saveToolsInner{background:#102033;color:#eaf0fa;border:1px solid #cba76177;border-radius:22px;padding:18px;max-width:480px;width:100%;box-shadow:0 12px 48px #000a;max-height:90vh;overflow:auto}
@@ -325,7 +327,9 @@ function drawNeighborhoods(){
     {x:1100,y:0,w:1750,h:1300,c:'#233647',accent:'#8bc7de',label:'FINANCIAL'},
     {x:1100,y:1300,w:1750,h:950,c:'#252e3b',accent:'#a7aec7',label:'MIDTOWN'},
     {x:1100,y:2250,w:1750,h:950,c:'#263e36',accent:'#a5c9a6',label:'HILLS'},
-    {x:2966,y:0,w:234,h:3200,c:'#193a48',accent:'#8fbacb',label:'MARINA'}
+    {x:2966,y:0,w:234,h:3200,c:'#193a48',accent:'#8fbacb',label:'MARINA'},
+    {x:0,y:3200,w:2200,h:1360,c:'#29473a',accent:'#c6dd9f',label:'GREEN VALLEY'},
+    {x:2200,y:3200,w:2240,h:1360,c:'#344957',accent:'#e3bd85',label:'SOUTH HARBOR'}
   ];
   ctx.save();
   for(const z of zones){ctx.fillStyle=z.c;ctx.fillRect(z.x,z.y,z.w,z.h);
@@ -538,7 +542,7 @@ let best=0;
 try{best=+(localStorage.getItem('crimecitybest4')||0)}catch(e){}
 bestEl.textContent=best;
 
-const world={w:4440,h:3200};
+const world={w:4440,h:4560};
 const roads=[];
 const blocks=[];
 const crosswalks=[];
@@ -556,7 +560,7 @@ const police=[];
 const citizens=[];
 let livingTime=0, rainEnabled=false, rainDrops=[];
 const LW_COLOR=['#d4b58c','#8fc2d8','#d8b5c9','#b3cf95','#d6dce8','#e2ab74'];
-const VROADS=[280,760,1240,1720,2200,2680,3060], HROADS=[280,760,1240,1720,2200,2680,3060];
+const VROADS=[280,760,1240,1720,2200,2680,3060], HROADS=[280,760,1240,1720,2200,2680,3060,3510,3990,4470];
 const TYPES=[{name:"COUPE",color:"#b88a37",speed:270},{name:"SPORT",color:"#bb354d",speed:330},{name:"SUV",color:"#d3dde7",speed:235},{name:"M5",color:"#174932",speed:310},{name:"ITALIAN GT",color:"#ffc01e",speed:360},{name:"LIMO",color:"#101a26",speed:210}];
 let pickedType=0;
 const keys={};
@@ -653,6 +657,64 @@ function drawEastsideArchitecture121(){
  }
 }
 
+
+function addSouthside122(){
+ // Only append south of y=3200; never move any original building or property.
+ const xroads=[...VROADS,3530,3970,4330].sort((a,b)=>a-b),ys=[3200,3510,3990,4470,world.h];
+ const xs=[0,...xroads,world.w],rw=154;
+ for(let j=0;j<ys.length-1;j++)for(let i=0;i<xs.length-1;i++){
+  const a=xs[i],b=xs[i+1],top=ys[j],bottom=ys[j+1],x=a+(i===0?27:rw/2+18),y=top+(j===0?23:rw/2+18);
+  const w=(b-a)-(i===0?45:rw/2+34)-(i===xs.length-2?25:rw/2+16);
+  const h=(bottom-top)-(j===0?44:rw/2+34)-(j===ys.length-2?25:rw/2+16);
+  if(w<65||h<64)continue;
+  const green=(a+b)/2<2200,style=(i+j)%4;
+  blocks.push({x,y,w,h,style,roof:green?'#53775a':'#536d7c',win:'#ebd5ad',
+    expansion122:true,southGreen:green,southHarbor:!green});
+  if(green){trees.push({x:x+20,y:y+25,s:1.3});trees.push({x:x+w-24,y:y+h-22,s:1.1});}
+  else{lamps.push({x:x-17,y:y-18});if(i%2===0)signs.push({x:x+w-22,y:y+20,text:'PORT',hue:i%4});}
+ }
+ // New roads connect with the old eastside, where the extension already exists.
+ for(const x of xroads)for(const y of [3510,3990,4470]){
+  crosswalks.push({x:x-80,y:y-84,w:160,h:18,dir:'h'});
+  crosswalks.push({x:x-84,y:y-80,w:18,h:160,dir:'v'});
+  lamps.push({x:x-89,y:y-89});
+ }
+ // Parked, stealable NPC vehicles. Player's saved garage is never changed.
+ for(let i=0;i<16;i++){
+  const x=xroads[i%xroads.length]+(i%2?40:-40),y=3300+(i*89)%1060;
+  if(y<world.h-85&&canMoveCar(x,y,17)&&!inBlock(x,y,32))
+   cars.push({x,y,color:TYPES[(i+1)%3].color,kind:(i+1)%3,angle:Math.PI/2,w:28,h:52,occupied:false});
+ }
+ // New traffic exists only inside the new districts.
+ for(let i=0;i<9;i++){
+  const x=xroads[i%xroads.length]+(i%2?40:-40),y=3330+i*117;
+  if(y>=world.h-90||!canMoveCar(x,y,17))continue;
+  traffic.push({x,y,dir:i%2?1:-1,vertical:true,kind:i%3,color:TYPES[i%3].color,
+   cityPatrol:i===6,speed:65+i%3*16,turnCooldown:3,angle:i%2?Math.PI/2:-Math.PI/2,brake:0});
+ }
+}
+function drawSouthside122(){
+ for(const b of blocks){
+  if(!b.expansion122||b.x+b.w<cam.x-35||b.y+b.h<cam.y-35||b.x>cam.x+W+35||b.y>cam.y+H+35)continue;
+  const x=b.x,y=b.y,w=b.w,h=b.h;ctx.save();
+  if(b.southGreen){
+   // Townhouse, gardens and a small pool — not a recolored office block.
+   ctx.fillStyle='#708e6f';ctx.fillRect(x+9,y+10,w-18,h-20);
+   ctx.fillStyle='#e1d2af';ctx.fillRect(x+16,y+16,w*.51,h*.47);
+   ctx.fillStyle='#83674e';ctx.fillRect(x+16,y+18,w*.51,6);
+   ctx.fillStyle='#276782';ctx.fillRect(x+w*.64,y+h*.6,w*.22,h*.21);
+   ctx.strokeStyle='#b6e8df';ctx.lineWidth=3;ctx.strokeRect(x+w*.64,y+h*.6,w*.22,h*.21);
+  }else{
+   // Warehouse roofs, vents and industrial skylights.
+   ctx.fillStyle='#687b85';ctx.fillRect(x+9,y+10,w-18,h-20);
+   ctx.fillStyle='#34495a';
+   for(let k=0;k<3;k++)ctx.fillRect(x+18,y+18+k*(h-38)/3,w-36,Math.max(5,(h-39)/6));
+   ctx.fillStyle='#a9c7cc';ctx.fillRect(x+w*.62,y+h*.2,w*.19,h*.22);
+   ctx.fillStyle='#d4b782';ctx.fillRect(x+w*.16,y+h*.75,w*.61,6);
+  }
+  ctx.restore();
+ }
+}
 function buildCity(){
   roads.length=0;blocks.length=0;crosswalks.length=0;lamps.length=0;signs.length=0;trees.length=0;decals.length=0;cars.length=0;traffic.length=0;police.length=0;
   const vertical=VROADS;
@@ -663,7 +725,7 @@ function buildCity(){
 
   // Blocks from road gaps
   const xs=[0,...vertical,3200];
-  const ys=[0,...horizontal,world.h];
+  const ys=[0,...horizontal.filter(y=>y<=3060),3200];
   for(let yi=0;yi<ys.length-1;yi++){
     for(let xi=0;xi<xs.length-1;xi++){
       const left=xs[xi],right=xs[xi+1],top=ys[yi],bottom=ys[yi+1];
@@ -684,6 +746,7 @@ function buildCity(){
 
   addSpecialDistricts();
   addEastside121();
+  addSouthside122();
   // Sidewalk pedestrians keep to building frontage and walk around blocks.
   citizens.length=0;
   for(const b of blocks){
@@ -1677,6 +1740,7 @@ function render(timeMs){
   drawDistrictGround();
   drawBuildings();
   drawEastsideArchitecture121();
+  drawSouthside122();
   drawPropertyFacades(timeMs);
   drawLampsAndTrees();
   drawSigns(timeMs);
@@ -1836,7 +1900,7 @@ buildCity();
 selectedMode=3;
 start();
 freeExitBtn.style.display='none';
-objectiveEl.textContent='🌃 CRIME CITY 12.1 · РАСШИРЕННЫЙ ГОРОД';
+objectiveEl.textContent='🌃 CRIME CITY 12.2 · БОЛЬШОЙ ГОРОД';
 updateHUD();
 render(0);
 })();
