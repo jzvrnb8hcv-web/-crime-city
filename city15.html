@@ -53,20 +53,47 @@ function save15Panel(){
  const count=owned.filter(Boolean).length;
  const txt='В ЭТОМ БРАУЗЕРЕ: '+count+'/6 машин и '+money.toLocaleString('ru-RU')+' ₽.';
  const warn=count<6?'<p style="color:#ffd386">⚠️ Здесь не найден весь автопарк. Safari, браузер ChatGPT и иконка iPhone хранят данные отдельно. Это НЕ означает, что покупки удалены.</p>':'<p style="color:#8fe6b9">✅ В этом браузере обнаружен твой автопарк.</p>';
- show('💾 ПРОГРЕСС И ПЕРЕНОС', '<p>'+txt+'</p>'+warn+'<p>Открой прежнюю игру там, где есть шесть машин, нажми «ПРОГРЕСС» → «ПОЛУЧИТЬ КОД» и сохрани код в Заметках. Затем вставь его сюда. Импорт изменит только тестовую 15.0, а 2D-игру не затронет.</p><textarea id="save15code" style="width:100%;min-height:115px;touch-action:auto;-webkit-user-select:text;user-select:text;border-radius:8px;background:#102a43;color:#fff;padding:10px" placeholder="Вставь CC14:… или JSON резервной копии"></textarea><button id="save15do">📥 ЗАГРУЗИТЬ ПРОГРЕСС В 15.0</button><button id="save15refresh">🔄 ПЕРЕПРОВЕРИТЬ ДАННЫЕ</button><p id="save15err"></p>');
+ show('💾 ПРОГРЕСС И ПЕРЕНОС', '<p>'+txt+'</p>'+warn+'<p>Открой прежнюю игру там, где есть шесть машин, нажми «ПРОГРЕСС» → «ПОЛУЧИТЬ КОД» и сохрани код в Заметках. Затем вставь его сюда. Импорт изменит только тестовую 15.0, а 2D-игру не затронет.</p><textarea id="save15code" style="width:100%;min-height:115px;touch-action:auto;-webkit-user-select:text;user-select:text;border-radius:8px;background:#102a43;color:#fff;padding:10px" placeholder="Вставь CC14:… или JSON резервной копии"></textarea><button id="save15paste">📋 ВСТАВИТЬ ИЗ БУФЕРА iPHONE</button><button id="save15check">🔍 ПРОВЕРИТЬ КОД</button><button id="save15do">📥 ЗАГРУЗИТЬ ПРОГРЕСС В 15.0</button><button id="save15refresh">🔄 ПЕРЕПРОВЕРИТЬ ДАННЫЕ</button><p id="save15err"></p>');
+ function decodeSave15(raw){
+  if(!raw||!raw.trim())throw Error('Поле пустое. Вставь полный код из предыдущей игры.');
+  const str=raw.trim().replace(/[\u200B-\u200D\uFEFF]/g,'');
+  let obj;
+  // Accept a code copied with surrounding chat text, quotes, newlines or spaces.
+  const idx=str.toUpperCase().indexOf('CC14');
+  if(idx>=0){
+   const after=str.slice(idx+4).replace(/^\s*[:：]\s*/,'');
+   if(after===str.slice(idx+4))throw Error('После CC14 нет двоеточия. Скопируй полный код CC14:...');
+   const found=after.match(/^[A-Za-z0-9+/_=\-\s]+/);
+   if(!found)throw Error('После CC14: отсутствуют данные.');
+   const token=found[0].replace(/\s+/g,'').replace(/-/g,'+').replace(/_/g,'/');
+   let bytes;
+   try{bytes=atob(token)}catch(e){throw Error('Код обрезан или содержит лишние символы. Скопируй его целиком.')}
+   try{obj=JSON.parse(new TextDecoder().decode(Uint8Array.from(bytes,c=>c.charCodeAt(0))))}
+   catch(e){throw Error('Не удалось прочитать данные кода CC14. Проверь, что он скопирован полностью.')}
+  }else{
+   try{obj=JSON.parse(str)}catch(e){throw Error('Код должен начинаться с CC14: или быть JSON-копией.')}
+  }
+  const data=obj?.kind==='CrimeCityPortableSave'?obj.data:obj;
+  if(!data||typeof data!=='object')throw Error('В коде нет данных игры');
+  const core=typeof data.crimecitysave5==='string'?JSON.parse(data.crimecitysave5):data.crimecitysave5;
+  const estate=typeof data.crimecityempire7==='string'?JSON.parse(data.crimecityempire7):data.crimecityempire7;
+  if(!core||!Array.isArray(core.owned)||core.owned.length<6||!Number.isFinite(Number(core.wallet)))throw Error('В коде не найдены деньги и шесть слотов машин');
+  return {core,estate:estate||{}};
+ }
+ $('save15paste').onclick=async()=>{
+  try{const clip=await navigator.clipboard.readText();if(!clip)throw Error('Буфер пуст.');$('save15code').value=clip;$('save15err').textContent='✅ Код вставлен. Нажми ПРОВЕРИТЬ КОД.'}
+  catch(e){$('save15code').focus();$('save15err').textContent='Нажми пальцем на поле выше и выбери «Вставить» — iPhone может запрещать доступ к буферу.'}
+ };
+ $('save15check').onclick=()=>{
+  try{const {core,estate}=decodeSave15($('save15code').value);$('save15err').textContent='✅ КОД ПОДХОДИТ: '+Number(core.wallet).toLocaleString('ru-RU')+' ₽ · '+core.owned.filter(Boolean).length+'/6 машин · '+(Array.isArray(estate.estates)?estate.estates.filter(Boolean).length:0)+'/3 объекта. Теперь нажми ЗАГРУЗИТЬ.'}
+  catch(e){$('save15err').textContent='❌ '+e.message}
+ };
  $('save15do').onclick=()=>{
   try{
-   const raw=$('save15code').value.trim();let obj;
-   if(raw.startsWith('CC14:')){let encoded=atob(raw.slice(5)),arr=Uint8Array.from(encoded,c=>c.charCodeAt(0));obj=JSON.parse(new TextDecoder().decode(arr))}
-   else obj=JSON.parse(raw);
-   let data=obj?.kind==='CrimeCityPortableSave'?obj.data:obj;
-   if(!data||typeof data!=='object')throw Error('Неверный формат');
-   let c=typeof data.crimecitysave5==='string'?JSON.parse(data.crimecitysave5):data.crimecitysave5;
-   let e=typeof data.crimecityempire7==='string'?JSON.parse(data.crimecityempire7):data.crimecityempire7;
-   if(!c||!Array.isArray(c.owned)||c.owned.length<6||!Number.isFinite(Number(c.wallet)))throw Error('Не найдены корректные данные автопарка');
-   if(!confirm('Импортировать '+c.owned.filter(Boolean).length+'/6 машин и '+Number(c.wallet).toLocaleString('ru-RU')+' ₽ только в Crime City 15.0?'))return;
-   localStorage.setItem('crimecity15import',JSON.stringify({core:c,estate:e||{}}));location.reload();
-  }catch(ex){$('save15err').textContent='❌ '+ex.message}
+   const {core,estate}=decodeSave15($('save15code').value);
+   if(!confirm('Перенести '+core.owned.filter(Boolean).length+'/6 машин и '+Number(core.wallet).toLocaleString('ru-RU')+' ₽ ТОЛЬКО в тестовую 15.0?'))return;
+   localStorage.setItem('crimecity15import',JSON.stringify({core,estate}));location.reload();
+  }catch(e){$('save15err').textContent='❌ '+e.message}
  };
  $('save15refresh').onclick=save15Panel;
 }
