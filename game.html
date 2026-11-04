@@ -1713,9 +1713,40 @@ function initSaveTools114(){
   };
   document.getElementById('saveToolsImport').onclick=()=>{
     try{
-      const input=JSON.parse(field.value.trim());
-      if(input.game!=='skorbinin-crime-city'||!input.save||typeof input.save!=='object')throw Error('Это не код Crime City');
-      show(restoreGameSave(input.save));
+      const raw=field.value.trim().replace(/[\u200B-\u200D\uFEFF]/g,'');
+      if(!raw)throw Error('Вставь сохранённый код CC14:...');
+      let input,payload;
+      const pos=raw.toUpperCase().indexOf('CC14:');
+      if(pos>=0){
+        const token=(raw.slice(pos+5).match(/^[A-Za-z0-9+/_=\-\s]+/)||[])[0];
+        if(!token)throw Error('Код CC14 обрезан');
+        const base64=token.replace(/\s/g,'').replace(/-/g,'+').replace(/_/g,'/');
+        const binary=atob(base64);
+        const json=new TextDecoder().decode(Uint8Array.from(binary,c=>c.charCodeAt(0)));
+        input=JSON.parse(json);
+        if(input.kind!=='CrimeCityPortableSave'||input.v!==1||!input.data)throw Error('Неверный формат резервной копии CC14');
+        payload=input.data;
+      }else{
+        input=JSON.parse(raw);
+        payload=input.game==='skorbinin-crime-city'&&input.save?input.save:(input.kind==='CrimeCityPortableSave'?input.data:null);
+        if(!payload)throw Error('Это не резервная копия Crime City');
+      }
+      if(!payload.crimecitysave5||!payload.crimecityempire7)throw Error('В коде нет автомобилей или недвижимости');
+      const car=JSON.parse(payload.crimecitysave5),estate=JSON.parse(payload.crimecityempire7);
+      if(!Array.isArray(car.owned)||car.owned.length!==6||!Array.isArray(car.tuning)||!Array.isArray(estate.estates))throw Error('Повреждены данные автопарка');
+      const count=car.owned.filter(Boolean).length;
+      if(!Number.isFinite(Number(car.wallet)))throw Error('Не найден баланс');
+      show('✅ Найдено: '+Number(car.wallet).toLocaleString('ru-RU')+' ₽, '+count+'/6 машин, '+estate.estates.filter(Boolean).length+'/3 объектов.');
+      if(!confirm('Восстановить '+count+'/6 машин, '+Number(car.wallet).toLocaleString('ru-RU')+' ₽, тюнинг и недвижимость? Текущий профиль будет сохранён в резервную копию.'))return;
+      try{
+        const previous={kind:'CrimeCityPortableSave',v:1,data:{}};
+        for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith('crimecity'))previous.data[k]=localStorage.getItem(k)}
+        localStorage.setItem('cc12BeforeImport_'+Date.now(),JSON.stringify(previous));
+      }catch(e){}
+      const result=restoreGameSave(payload);
+      if(payload.crimecitystory12)try{localStorage.setItem('crimecitystory12',payload.crimecitystory12)}catch(e){}
+      show(result+' Перезапускаю 12.0 с восстановленным профилем.');
+      setTimeout(()=>location.reload(),350);
     }catch(e){show('❌ '+e.message);}
   };
   addEventListener('pagehide',()=>{saveProgress();saveEmpire();});
