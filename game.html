@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, user-scalable=no">
 <meta name="theme-color" content="#08121e">
-<title>SKORBININ: CRIME CITY 11.5</title>
+<title>SKORBININ: CRIME CITY 11.0</title>
 <style>
 :root{color-scheme:dark}
 *{box-sizing:border-box}
@@ -58,7 +58,7 @@ h2{font-size:30px;line-height:1.1;margin:12px 0 8px}
 #worldAction:active{transform:translateX(-50%) scale(.96)}
 
 .carPreview10{height:85px;margin:0 auto 4px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2px;color:var(--car);text-shadow:0 0 16px currentColor}.carPreview10 span{font-size:42px;line-height:1}.carPreview10 b{font-size:9px!important;color:#b5cdd8}
-/* LIVING WORLD · 11.0 */
+/* CRIMINAL EMPIRE · 12.0 */
 :root{color-scheme:dark}
 #hud{gap:5px;padding-left:10px;padding-right:10px}
 .stat{min-width:0;flex:1;padding:8px 10px;background:linear-gradient(160deg,#0d2336eb,#07121fdf);border:1px solid #9ab4c12b;border-radius:12px;box-shadow:0 7px 23px #0008,inset 0 1px #ffffff12;letter-spacing:.085em;font-size:10px}
@@ -73,21 +73,7 @@ h2{font-size:30px;line-height:1.1;margin:12px 0 8px}
 .actionBtn{background:linear-gradient(160deg,#efd7a5,#bb9054);border-color:#f5dcb0}
 .actionBtn.small{background:linear-gradient(155deg,#a5cadd,#42647e);border-color:#bddce8}
 @media(max-width:400px){#hud{gap:4px}.stat{padding:8px 7px;font-size:9px}.stat b{font-size:16px}}
-
-/* Persistent in-app backup and owner recovery controls */
-#saveToolsBtn{position:fixed;left:17px;top:calc(45% + 48px);z-index:10;padding:10px 14px;background:#122b42ed;color:#f2d7a6;border:1px solid #d7a76588;border-radius:15px;font-weight:800;box-shadow:0 4px 15px #0008;cursor:pointer}
-#saveToolsModal{display:none;position:fixed;inset:0;z-index:90;background:#050b16f2;align-items:center;justify-content:center;padding:18px;overflow:auto}
-#saveToolsModal.open{display:flex}
-#saveToolsInner{background:#102033;color:#eaf0fa;border:1px solid #cba76177;border-radius:22px;padding:18px;max-width:480px;width:100%;box-shadow:0 12px 48px #000a;max-height:90vh;overflow:auto}
-#saveToolsInner textarea{width:100%;min-height:115px;resize:vertical;border:1px solid #7f9ab1;border-radius:12px;background:#07121f;color:#f2f5fa;padding:10px;font-size:12px}
-#saveToolsInner button{min-height:44px;width:100%;margin-top:9px;background:#273d57;color:#fff;border:1px solid #d1ad6a88;border-radius:12px;font-weight:bold}
-#saveToolsInner #saveToolsRescue{background:linear-gradient(100deg,#e4b867,#c48b33);color:#0d1521}
-#saveToolsInner #saveToolsExport{background:#405b77;color:#fff}
-
 </style>
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Crime City">
-<link rel="manifest" href="./manifest.webmanifest">
 </head>
 <body>
 <canvas id="game"></canvas>
@@ -141,21 +127,6 @@ h2{font-size:30px;line-height:1.1;margin:12px 0 8px}
     <div class="smallNote">Safari на iPhone · гараж и деньги сохраняются на этом устройстве</div>
   </div>
 </div>
-<button id="saveToolsBtn" type="button" aria-label="Прогресс и сохранение">💾 ПРОГРЕСС</button>
-<div id="saveToolsModal" role="dialog" aria-modal="true" aria-label="Прогресс Crime City">
-<div id="saveToolsInner">
-<h2>💾 CRIME CITY · ПРОГРЕСС</h2>
-<p>Исправлено восстановление: баланс, гараж и недвижимость обновляются сразу, без перезагрузки.</p>
-<button id="saveToolsRescue" type="button">👑 ВЕРНУТЬ МОИ 10 000 000 ₽, ГАРАЖ И ОСОБНЯК</button>
-<h3>Резервная копия</h3>
-<button id="saveToolsExport" type="button">📋 ПОКАЗАТЬ КОД СОХРАНЕНИЯ</button>
-<textarea id="saveToolsData" autocapitalize="off" autocomplete="off" spellcheck="false" placeholder="Вставь ранее скопированный код сохранения"></textarea>
-<button id="saveToolsCopy" type="button">КОПИРОВАТЬ КОД</button>
-<button id="saveToolsImport" type="button">ВОССТАНОВИТЬ ИЗ КОДА</button>
-<button id="saveToolsClose" type="button">ВЕРНУТЬСЯ В ИГРУ</button>
-<p id="saveToolsStatus" aria-live="polite" style="font-size:13px;color:#ffdd9b"></p>
-</div></div>
-
 <script>
 (()=>{
 'use strict';
@@ -358,7 +329,7 @@ function modeButtons(){return missions.map((m,i)=>`<button class="modeBtn ${sele
 const CAR_NAMES=['MIDNIGHT COUPE','RED 911','G63 BLACK','BMW M5 CS','AVENTADOR SVJ','PHANTOM'];
 const fmt=v=>Math.round(v).toLocaleString('ru-RU')+' ₽';
 function garageScreen(){
-  panel.innerHTML=`<div class="eyebrow">SKORBININ · CRIME CITY 11.5</div><h2>ЛИЧНЫЙ АВТОПАРК 🚘</h2><p class="sub">У каждого автомобиля своя внешность и характеристики. Выбранная машина ждёт рядом с тобой в начале контракта.</p><div class="garageWallet">💰 ${fmt(wallet)}</div><div class="garageGrid">${TYPES.map((c,i)=>`<button class="garageTile ${selectedGarage===i?'active':''}" data-car="${i}">${PLAYER_CAR_IMAGES[i]?`<img src="${PLAYER_CAR_IMAGES[i].src}" alt="${CAR_NAMES[i]}">`:`<div style="height:72px;display:grid;place-items:center;font-size:36px">${["","","","🚘","🏎️","🚙"][i]}</div>`}<b>${c.name}</b><small>${CAR_NAMES[i]}</small><small>${owned[i]?'✅ Куплен':fmt(CAR_PRICES[i])}</small><small>⚡${tuning[i][0]} 🛡️${tuning[i][1]}</small></button>`).join('')}</div><p class="garageStatus">${owned[selectedGarage]?'✅ В гараже · '+CAR_NAMES[selectedGarage]:'🔒 Не куплен'} ${owned[selectedGarage]&&activeGarage===selectedGarage?'· ⭐ АКТИВНА':''}</p><div class="garageActions"><button id="buyCar">${!owned[selectedGarage]?`КУПИТЬ · ${fmt(CAR_PRICES[selectedGarage])}`:activeGarage===selectedGarage?'⭐ АКТИВНАЯ МАШИНА':'✓ ВЫБРАТЬ ДЛЯ МИССИИ'}</button><button id="upgradeEngine">⚡ МОТОР · ${tuning[selectedGarage][0]>=4?'МАКСИМУМ':fmt(30000*(tuning[selectedGarage][0]+1))}</button><button id="upgradeArmor">🛡️ КУЗОВ · ${tuning[selectedGarage][1]>=4?'МАКСИМУМ':fmt(25000*(tuning[selectedGarage][1]+1))}</button><button id="garageMission">🎯 КОНТРАКТЫ</button></div><button id="garageBack" class="backBtn">НАЗАД К МИССИЯМ</button>`
+  panel.innerHTML=`<div class="eyebrow">SKORBININ · CRIME CITY 11.0</div><h2>ЛИЧНЫЙ АВТОПАРК 🚘</h2><p class="sub">У каждого автомобиля своя внешность и характеристики. Выбранная машина ждёт рядом с тобой в начале контракта.</p><div class="garageWallet">💰 ${fmt(wallet)}</div><div class="garageGrid">${TYPES.map((c,i)=>`<button class="garageTile ${selectedGarage===i?'active':''}" data-car="${i}">${PLAYER_CAR_IMAGES[i]?`<img src="${PLAYER_CAR_IMAGES[i].src}" alt="${CAR_NAMES[i]}">`:`<div style="height:72px;display:grid;place-items:center;font-size:36px">${["","","","🚘","🏎️","🚙"][i]}</div>`}<b>${c.name}</b><small>${CAR_NAMES[i]}</small><small>${owned[i]?'✅ Куплен':fmt(CAR_PRICES[i])}</small><small>⚡${tuning[i][0]} 🛡️${tuning[i][1]}</small></button>`).join('')}</div><p class="garageStatus">${owned[selectedGarage]?'✅ В гараже · '+CAR_NAMES[selectedGarage]:'🔒 Не куплен'} ${owned[selectedGarage]&&activeGarage===selectedGarage?'· ⭐ АКТИВНА':''}</p><div class="garageActions"><button id="buyCar">${!owned[selectedGarage]?`КУПИТЬ · ${fmt(CAR_PRICES[selectedGarage])}`:activeGarage===selectedGarage?'⭐ АКТИВНАЯ МАШИНА':'✓ ВЫБРАТЬ ДЛЯ МИССИИ'}</button><button id="upgradeEngine">⚡ МОТОР · ${tuning[selectedGarage][0]>=4?'МАКСИМУМ':fmt(30000*(tuning[selectedGarage][0]+1))}</button><button id="upgradeArmor">🛡️ КУЗОВ · ${tuning[selectedGarage][1]>=4?'МАКСИМУМ':fmt(25000*(tuning[selectedGarage][1]+1))}</button><button id="garageMission">🎯 КОНТРАКТЫ</button></div><button id="garageBack" class="backBtn">НАЗАД К МИССИЯМ</button>`
   panel.querySelectorAll('[data-car]').forEach(b=>b.addEventListener('click',()=>{selectedGarage=+b.dataset.car;garageScreen()}));
   panel.querySelector('#buyCar').addEventListener('click',()=>{if(!owned[selectedGarage]){if(wallet<CAR_PRICES[selectedGarage]){showToast('НЕДОСТАТОЧНО ДЕНЕГ');return;}wallet-=CAR_PRICES[selectedGarage];owned[selectedGarage]=true;}activeGarage=selectedGarage;saveProgress();garageScreen()});
   for(const [id,idx,base] of [['upgradeEngine',0,30000],['upgradeArmor',1,25000]]){panel.querySelector('#'+id).addEventListener('click',()=>{if(!owned[selectedGarage]){showToast('СНАЧАЛА КУПИ МАШИНУ');return;}if(tuning[selectedGarage][idx]>=4){showToast('УЛУЧШЕНИЕ МАКСИМАЛЬНОЕ');return;}const price=base*(tuning[selectedGarage][idx]+1);if(wallet<price){showToast('НЕ ХВАТАЕТ ДЕНЕГ');return;}wallet-=price;tuning[selectedGarage][idx]++;saveProgress();garageScreen()})}
@@ -436,7 +407,7 @@ function openOwnedProperty(index){
  function showProperty(){
   const e=ESTATES[index];
   const cost=index===2?0:12000;
-  panel.innerHTML=`<div class="eyebrow">SKORBININ · CRIME CITY 11.5</div><h2>${index===2?'🏡':'🏠'} ${e.name.toUpperCase()}</h2><p class="sub">Это твоя недвижимость. Здесь можно отдохнуть, восстановить машину и вернуться в город. Доход с объекта начисляется после успешных контрактов.</p><div class="garageWallet">💰 ${fmt(wallet)}</div><div class="instructions">🏦 Доход с объекта: +${fmt(e.income)} за успешный контракт<br>🚘 Прочность: ${player.inCar?Math.round(player.inCar.hp):ownedCar?Math.round(ownedCar.hp):0}%</div><button id="propertyRepair" class="garageBtn">🔧 ВОССТАНОВИТЬ МАШИНУ · ${cost===0?'БЕСПЛАТНО':fmt(cost)}</button><button id="leaveProperty" class="primary">🚗 ВЕРНУТЬСЯ В ГОРОД</button>`;
+  panel.innerHTML=`<div class="eyebrow">SKORBININ · CRIME CITY 11.0</div><h2>${index===2?'🏡':'🏠'} ${e.name.toUpperCase()}</h2><p class="sub">Это твоя недвижимость. Здесь можно отдохнуть, восстановить машину и вернуться в город. Доход с объекта начисляется после успешных контрактов.</p><div class="garageWallet">💰 ${fmt(wallet)}</div><div class="instructions">🏦 Доход с объекта: +${fmt(e.income)} за успешный контракт<br>🚘 Прочность: ${player.inCar?Math.round(player.inCar.hp):ownedCar?Math.round(ownedCar.hp):0}%</div><button id="propertyRepair" class="garageBtn">🔧 ВОССТАНОВИТЬ МАШИНУ · ${cost===0?'БЕСПЛАТНО':fmt(cost)}</button><button id="leaveProperty" class="primary">🚗 ВЕРНУТЬСЯ В ГОРОД</button>`;
   panel.querySelector('#propertyRepair').addEventListener('click',()=>{
     const car=player.inCar||ownedCar;
     if(!car){showToast('МАШИНА НЕ НАЙДЕНА');return;}
@@ -458,7 +429,7 @@ function openWorldWorkshop(){
   workshopScreen();
 }
 function workshopScreen(){
- panel.innerHTML=`<div class="eyebrow">SKORBININ · CRIME CITY 11.5</div><h2>🚘 МОЙ ГАРАЖ</h2><p class="sub">Ты на территории гаража. Выбери машину — она появится здесь сразу, без перезапуска города.</p><div class="garageWallet">💰 ${fmt(wallet)}</div><div class="garageGrid">${TYPES.map((c,i)=>`<button data-workcar="${i}" class="garageTile ${activeGarage===i?'active':''}">${PLAYER_CAR_IMAGES[i]?`<img src="${PLAYER_CAR_IMAGES[i].src}" alt="${CAR_NAMES[i]}">`:`<div class="carPreview10" style="--car:${c.color}"><span>◈</span><b>${CAR_NAMES[i]}</b></div>`}<b>${c.name}</b><small>${CAR_NAMES[i]}</small><small>${owned[i]?'✅ КУПЛЕНА':'🔒 '+fmt(CAR_PRICES[i])}</small><small>⚡${tuning[i][0]} 🛡️${tuning[i][1]}</small></button>`).join('')}</div><p class="garageStatus">⭐ ${CAR_NAMES[activeGarage]} · ⚡${tuning[activeGarage][0]} 🛡️${tuning[activeGarage][1]}</p><button id="workEngine" class="garageBtn">⚡ МОТОР · ${tuning[activeGarage][0]===4?'МАКСИМУМ':fmt(30000*(tuning[activeGarage][0]+1))}</button><button id="workArmor" class="garageBtn">🛡️ КУЗОВ · ${tuning[activeGarage][1]===4?'МАКСИМУМ':fmt(25000*(tuning[activeGarage][1]+1))}</button><button id="leaveWorkshop" class="primary">🚗 ВЫЕХАТЬ В ГОРОД</button>`;
+ panel.innerHTML=`<div class="eyebrow">SKORBININ · CRIME CITY 11.0</div><h2>🚘 МОЙ ГАРАЖ</h2><p class="sub">Ты на территории гаража. Выбери машину — она появится здесь сразу, без перезапуска города.</p><div class="garageWallet">💰 ${fmt(wallet)}</div><div class="garageGrid">${TYPES.map((c,i)=>`<button data-workcar="${i}" class="garageTile ${activeGarage===i?'active':''}">${PLAYER_CAR_IMAGES[i]?`<img src="${PLAYER_CAR_IMAGES[i].src}" alt="${CAR_NAMES[i]}">`:`<div class="carPreview10" style="--car:${c.color}"><span>◈</span><b>${CAR_NAMES[i]}</b></div>`}<b>${c.name}</b><small>${CAR_NAMES[i]}</small><small>${owned[i]?'✅ КУПЛЕНА':'🔒 '+fmt(CAR_PRICES[i])}</small><small>⚡${tuning[i][0]} 🛡️${tuning[i][1]}</small></button>`).join('')}</div><p class="garageStatus">⭐ ${CAR_NAMES[activeGarage]} · ⚡${tuning[activeGarage][0]} 🛡️${tuning[activeGarage][1]}</p><button id="workEngine" class="garageBtn">⚡ МОТОР · ${tuning[activeGarage][0]===4?'МАКСИМУМ':fmt(30000*(tuning[activeGarage][0]+1))}</button><button id="workArmor" class="garageBtn">🛡️ КУЗОВ · ${tuning[activeGarage][1]===4?'МАКСИМУМ':fmt(25000*(tuning[activeGarage][1]+1))}</button><button id="leaveWorkshop" class="primary">🚗 ВЫЕХАТЬ В ГОРОД</button>`;
  panel.querySelectorAll('[data-workcar]').forEach(b=>b.addEventListener('click',()=>{
   const k=+b.dataset.workcar;
   if(!owned[k]){if(wallet<CAR_PRICES[k]){showToast('НЕ ХВАТАЕТ ДЕНЕГ');return;}wallet-=CAR_PRICES[k];owned[k]=true;}
@@ -1149,7 +1120,7 @@ function finishFreeRide(reason='exit'){
   input.x=0;input.y=0;nub.style.transform='translate(0,0)';
   if(score>best){best=score;try{localStorage.setItem('crimecitybest4',String(best))}catch(e){}}
   const message=reason==='exit'?'Прогулка завершена. Весь заработок сохранён!':'Прогулка закончилась, но деньги остались у тебя.';
-  panel.innerHTML=`<div class="eyebrow">SKORBININ · CRIME CITY 11.5</div><h2>🌃 СВОБОДНЫЙ ГОРОД</h2><p class="sub">${message}</p><div class="instructions">💰 Заработано за поездку: <b>${fmt(freeEarned)}</b><br>🏦 Баланс: <b>${fmt(wallet)}</b><br>🗺️ Исследуй новые кварталы, выбирай контракты и возвращайся когда захочешь.</div><button class="primary" id="freeReturnMenu">К КОНТРАКТАМ</button><button class="garageBtn" id="freeReturnGarage">🚘 ГАРАЖ</button><button class="garageBtn" id="freeReturnEstate">🏙️ МОЯ ИМПЕРИЯ</button>`;
+  panel.innerHTML=`<div class="eyebrow">SKORBININ · CRIME CITY 11.0</div><h2>🌃 СВОБОДНЫЙ ГОРОД</h2><p class="sub">${message}</p><div class="instructions">💰 Заработано за поездку: <b>${fmt(freeEarned)}</b><br>🏦 Баланс: <b>${fmt(wallet)}</b><br>🗺️ Исследуй новые кварталы, выбирай контракты и возвращайся когда захочешь.</div><button class="primary" id="freeReturnMenu">К КОНТРАКТАМ</button><button class="garageBtn" id="freeReturnGarage">🚘 ГАРАЖ</button><button class="garageBtn" id="freeReturnEstate">🏙️ МОЯ ИМПЕРИЯ</button>`;
   overlay.classList.remove('hide');
   panel.querySelector('#freeReturnMenu').addEventListener('click',menuScreen);
   panel.querySelector('#freeReturnGarage').addEventListener('click',garageScreen);
@@ -1174,7 +1145,7 @@ function end(win){
   input.x=0; input.y=0; nub.style.transform='translate(0,0)';
   if(score>best){best=score; try{localStorage.setItem('crimecitybest4',String(best))}catch(e){} bestEl.textContent=best;}
   const bonus=ESTATES.reduce((sum,e,i)=>sum+(estates[i]?e.income:0),0)+districtCount*9000;
-  panel.innerHTML=`<div class="eyebrow">SKORBININ · CRIME CITY 11.5</div><h2>${win?'УСПЕХ! 🏆':'ПОПРОБУЙ ЕЩЁ'}</h2><p class="sub">${win?completedMode===4?'Гонка выиграна!':completedMode===5?'Район под контролем!':'Контракт завершён!':hearts<=0?'Машина или герой не выдержали.':'В следующий раз получится!'}</p><div class="instructions">💰 ${win?'Награда: '+fmt(runPayout):'Награда: 0 ₽'}<br>🏙️ Доход империи: ${win?'+'+fmt(bonus):'0 ₽'}<br>🗺️ Районов: ${districtCount}/${DISTRICTS.length}<br>🏅 Рекорд: ${best}</div><div class="modeGrid" id="modeGrid">${modeButtons()}</div><button class="primary" id="retryBtn">НАЧАТЬ</button><button id="postEstate" class="garageBtn">🏙️ МОЯ ИМПЕРИЯ</button><button id="postGarage" class="garageBtn">🚘 ГАРАЖ</button>`;
+  panel.innerHTML=`<div class="eyebrow">SKORBININ · CRIME CITY 11.0</div><h2>${win?'УСПЕХ! 🏆':'ПОПРОБУЙ ЕЩЁ'}</h2><p class="sub">${win?completedMode===4?'Гонка выиграна!':completedMode===5?'Район под контролем!':'Контракт завершён!':hearts<=0?'Машина или герой не выдержали.':'В следующий раз получится!'}</p><div class="instructions">💰 ${win?'Награда: '+fmt(runPayout):'Награда: 0 ₽'}<br>🏙️ Доход империи: ${win?'+'+fmt(bonus):'0 ₽'}<br>🗺️ Районов: ${districtCount}/${DISTRICTS.length}<br>🏅 Рекорд: ${best}</div><div class="modeGrid" id="modeGrid">${modeButtons()}</div><button class="primary" id="retryBtn">НАЧАТЬ</button><button id="postEstate" class="garageBtn">🏙️ МОЯ ИМПЕРИЯ</button><button id="postGarage" class="garageBtn">🚘 ГАРАЖ</button>`;
   overlay.classList.remove('hide');
   panel.querySelectorAll('.modeBtn').forEach(b=>b.addEventListener('click',()=>{selectedMode=+b.dataset.mode;panel.querySelectorAll('.modeBtn').forEach(c=>c.classList.toggle('selected',c===b))}));
   panel.querySelector('#retryBtn').addEventListener('click',start);
@@ -1647,88 +1618,13 @@ addEventListener('keydown',e=>{keys[e.key]=true; if(e.key===' '||e.key==='Shift'
 addEventListener('keyup',e=>keys[e.key]=false);
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&state==='play') last=performance.now()});
 
-
-// Version 11.4 — restore state IN MEMORY before persisting; never reload after import.
-function restoreGameSave(savedPayload){
-  const progress=JSON.parse(savedPayload.crimecitysave5||'null');
-  const empire=JSON.parse(savedPayload.crimecityempire7||'null');
-  if(!progress||!Number.isFinite(Number(progress.wallet))||Number(progress.wallet)<0||!Array.isArray(progress.owned)||!Array.isArray(progress.tuning))throw Error('Неполные данные денег или машин');
-  if(!empire||!Array.isArray(empire.estates))throw Error('Нет данных недвижимости');
-  wallet=Math.max(0,Math.floor(Number(progress.wallet)));
-  owned=Array.from({length:6},(_,i)=>!!progress.owned[i]);
-  owned[0]=true;
-  tuning=Array.from({length:6},(_,i)=>Array.from({length:2},(_,j)=>Math.max(0,Math.min(4,Math.floor(Number(progress.tuning?.[i]?.[j])||0)))));
-  const desired=Math.floor(Number(progress.selectedGarage)||0);
-  activeGarage=desired>=0&&desired<6&&owned[desired]?desired:0;
-  selectedGarage=activeGarage;
-  estates=ESTATES.map((_,i)=>!!empire.estates[i]);
-  districtCount=Math.max(0,Math.min(4,Math.floor(Number(empire.districtCount)||0)));
-  if(savedPayload.crimecity9){
-    try{const e=JSON.parse(savedPayload.crimecity9);empire9.heists=Math.max(0,Math.floor(Number(e.heists)||0));empire9.events=Math.max(0,Math.floor(Number(e.events)||0));}catch(e){}
-  }
-  // Save current runtime state. This prevents pagehide from overwriting the restore.
-  saveProgress();saveEmpire();saveCity9();
-  if(ownedCar){
-    ownedCar.kind=activeGarage;
-    ownedCar.color=TYPES[activeGarage].color;
-    ownedCar.hp=100+35*tuning[activeGarage][1];
-  }
-  updateHUD();
-  return '✅ Сохранение восстановлено: '+wallet.toLocaleString('ru-RU')+' ₽. Гараж и недвижимость обновлены.';
-}
-function founderRecovery114(){
-  // Re-claimable recovery, NOT a one-time flag: avoids the previous claimed-but-zero bug.
-  const gifted={
-    crimecitysave5:JSON.stringify({wallet:Math.max(wallet,10000000),owned:[...owned],tuning:tuning.map(x=>[...x]),selectedGarage:activeGarage}),
-    crimecityempire7:JSON.stringify({estates:ESTATES.map((_,i)=>i===0||i===2||!!estates[i]),districtCount}),
-    crimecity9:JSON.stringify(empire9)
-  };
-  const message=restoreGameSave(gifted);
-  try{localStorage.setItem('crimecityFounderRecovered114','yes');}catch(e){}
-  return message;
-}
-function initSaveTools114(){
-  const btn=document.getElementById('saveToolsBtn');
-  const modal=document.getElementById('saveToolsModal');
-  const field=document.getElementById('saveToolsData');
-  const status=document.getElementById('saveToolsStatus');
-  const keys=['crimecitysave5','crimecityempire7','crimecity9','crimecitybest4'];
-  const show=s=>{status.textContent=s;};
-  btn.onclick=()=>{modal.classList.add('open');show('');};
-  document.getElementById('saveToolsClose').onclick=()=>{modal.classList.remove('open');};
-  document.getElementById('saveToolsRescue').onclick=()=>{
-    try{show(founderRecovery114());}catch(e){show('❌ '+e.message);}
-  };
-  document.getElementById('saveToolsExport').onclick=()=>{
-    saveProgress();saveEmpire();saveCity9();
-    const out={game:'skorbinin-crime-city',version:1,savedAt:new Date().toISOString(),save:{}};
-    keys.forEach(k=>{const v=localStorage.getItem(k);if(v!==null)out.save[k]=v;});
-    field.value=JSON.stringify(out);field.focus();field.select();
-    show('Код создан. Скопируй его в Заметки.');
-  };
-  document.getElementById('saveToolsCopy').onclick=async()=>{
-    if(!field.value.trim()){show('Сначала создай код сохранения.');return;}
-    try{await navigator.clipboard.writeText(field.value);show('✅ Скопировано в буфер обмена');}
-    catch(e){field.focus();field.select();show('Выделила код: нажми «Скопировать» в меню iPhone.');}
-  };
-  document.getElementById('saveToolsImport').onclick=()=>{
-    try{
-      const input=JSON.parse(field.value.trim());
-      if(input.game!=='skorbinin-crime-city'||!input.save||typeof input.save!=='object')throw Error('Это не код Crime City');
-      show(restoreGameSave(input.save));
-    }catch(e){show('❌ '+e.message);}
-  };
-  addEventListener('pagehide',()=>{saveProgress();saveEmpire();});
-  // A founder link works in Safari; the button works in standalone home-screen mode.
-  try{const params=new URLSearchParams(location.search);if(params.get('founder')==='skorbinin-10000000'){founderRecovery114();history.replaceState(null,'',location.pathname+location.hash);}}catch(e){}
-}
-initSaveTools114();
-
+// Load the story without changing the existing physics or save files.
+fetch('./story12.js?v=120', {cache:'no-store'}).then(r=>{if(!r.ok)throw Error('HTTP '+r.status);return r.text()}).then(source=>{eval(source)}).catch(e=>{console.warn('Story mode unavailable',e);showToast('СЮЖЕТ НЕ ЗАГРУЖЕН — ПРОВЕРЬ ИНТЕРНЕТ')});
 buildCity();
 selectedMode=3;
 start();
 freeExitBtn.style.display='none';
-objectiveEl.textContent='🌃 CRIME CITY 11.5 · КАРТА · АВТОСАЛОН · ЗАДАНИЯ';
+objectiveEl.textContent='🌃 CRIME CITY 11.0 · КАРТА · АВТОСАЛОН · ЗАДАНИЯ';
 updateHUD();
 render(0);
 })();
