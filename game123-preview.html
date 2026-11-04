@@ -495,14 +495,16 @@ function changeWorldCar(kind){
  player.inCar=ownedCar;player.x=ownedCar.x;player.y=ownedCar.y;
  showToast('⭐ ВЫБРАНА '+CAR_NAMES[kind]);
 }
+function arch123Labels(mc,scale){for(const p of [{x:5790,y:280,text:'NIGHT ISLAND'},{x:2020,y:5350,text:'SOUTH GARDENS'}]){mc.fillStyle='#f5d89d';mc.font='bold 11px system-ui';mc.textAlign='center';mc.fillText(p.text,p.x*scale,p.y*scale)}}
 function cityMapDraw(){
  const mc=worldMapCanvas.getContext('2d'),w=worldMapCanvas.width,h=worldMapCanvas.height;
  const scale=w/world.w;
  mc.clearRect(0,0,w,h);mc.fillStyle='#102234';mc.fillRect(0,0,w,h);
  mc.fillStyle='#2d4358';for(const r of roads)mc.fillRect(r.x*scale,r.y*scale,r.w*scale,r.h*scale);
  mc.fillStyle='#0d4a68';mc.fillRect(CANAL.x*scale,0,CANAL.w*scale,h);mc.fillStyle='#466276';for(const y of HROADS)mc.fillRect(CANAL.x*scale,(y-70)*scale,CANAL.w*scale,140*scale);
- mc.fillStyle='#1a2a39';for(const b of blocks)mc.fillRect(b.x*scale,b.y*scale,b.w*scale,b.h*scale);
+ mc.fillStyle='#0e5870';mc.fillRect(4440*scale,0,440*scale,4560*scale);mc.fillRect(0,4560*scale,4440*scale,420*scale);mc.fillRect(4440*scale,4560*scale,2360*scale,1820*scale);mc.fillStyle='#a8b6b7';for(const y of [1240,2680,3990])mc.fillRect(4440*scale,(y-77)*scale,440*scale,154*scale);for(const x of [760,2200,3970])mc.fillRect((x-77)*scale,4560*scale,154*scale,420*scale);mc.fillStyle='#1a2a39';for(const b of blocks)mc.fillRect(b.x*scale,b.y*scale,b.w*scale,b.h*scale);
  const mark=(x,y,icon,label,color)=>{mc.beginPath();mc.fillStyle=color;mc.arc(x*scale,y*scale,12,0,7);mc.fill();mc.font='15px system-ui';mc.textAlign='center';mc.fillText(icon,x*scale,y*scale+5);mc.font='bold 10px system-ui';mc.fillStyle='#fff';mc.fillText(label,x*scale,y*scale-17);};
+ arch123Labels(mc,scale);
  for(const m of CITY_SERVICES)mark(m.x,m.y,m.icon,m.name,'#27546a');
  if(worldEvent)mark(worldEvent.x,worldEvent.y,'🎲',worldEvent.name,'#276581');
  for(const m of CITY_JOBS)mark(m.x,m.y,m.icon,m.label,'#355672');
@@ -1996,6 +1998,6 @@ render(0);
 })();
 </script>
 <script>
-(()=>{const menu=document.getElementById('ccMenuPanel'),open=document.getElementById('ccMenuBtn');open.addEventListener('click',()=>menu.classList.add('open'));document.getElementById('ccCloseMenu').onclick=()=>menu.classList.remove('open');document.getElementById('ccOpenSave').onclick=()=>{menu.classList.remove('open');document.getElementById('saveToolsBtn').click()};document.getElementById('ccMenuWorld').onclick=()=>{menu.classList.remove('open');document.getElementById('mapBtn')?.click()};})();
+(()=>{const menu=document.getElementById('ccMenuPanel'),open=document.getElementById('ccMenuBtn');open.addEventListener('click',()=>menu.classList.add('open'));document.getElementById('ccCloseMenu').onclick=()=>menu.classList.remove('open');document.getElementById('ccOpenSave').onclick=()=>{menu.classList.remove('open');document.getElementById('saveToolsBtn').click()};document.getElementById('ccMenuWorld').onclick=()=>{menu.classList.remove('open');document.getElementById('worldMapBtn')?.click()};})();
 </script></body>
 </html>
