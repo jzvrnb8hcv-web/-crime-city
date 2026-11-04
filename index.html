@@ -7,23 +7,73 @@
 <link rel="manifest" href="./manifest.webmanifest"><title>SKORBININ Crime City 12.0</title>
 <style>html,body{margin:0;width:100%;height:100%;background:#071422;color:#f9d897;font-family:system-ui,-apple-system,Arial;display:grid;place-items:center;text-align:center}main{padding:25px}h1{letter-spacing:.08em;font-size:26px}p{color:#bfcbd9;line-height:1.6}button{border:1px solid #d2ab67;color:#ffe3b3;background:#1a3046;padding:13px 22px;border-radius:12px;font:700 16px system-ui}</style>
 </head><body><main><h1>CRIME CITY 12.0</h1><p id="status">Загружаю стабильную Crime City 12.0…</p><button id="retry" hidden>Повторить загрузку</button></main>
+<style>
+#safeRecovery{display:none;position:fixed;inset:0;background:#071422;color:#eff2f3;z-index:9999;overflow:auto;text-align:left;font:15px system-ui;padding:22px;box-sizing:border-box}
+#safeRecovery .wrap{max-width:550px;margin:auto}#safeRecovery textarea{box-sizing:border-box;min-height:145px;width:100%;background:#132c42;color:white;border:1px solid #9aa5b7;border-radius:11px;padding:12px;font:12px monospace;touch-action:auto;-webkit-user-select:text;user-select:text}
+#safeRecovery button{display:block;width:100%;margin:11px 0}#safeRecovery p{line-height:1.5}#safeRecovery .note{color:#ffd99b}
+</style>
+<section id="safeRecovery"><div class="wrap">
+<h2>💾 CRIME CITY 12.0 · ЗАЩИТА ПРОГРЕССА</h2>
+<p id="safeStatus"></p>
+<p class="note">Перед запуском игры обнаружено неполное сохранение. Чтобы не заменить купленные машины стартовыми данными, игра пока не загружается. Основной профиль и твой резервный код не удалены.</p>
+<button id="safeLocal">🛟 ПОИСК РЕЗЕРВНОЙ КОПИИ</button>
+<textarea id="safeCode" placeholder="Вставь сохранённый код CC14:..."></textarea>
+<button id="safeImport">📥 ВОССТАНОВИТЬ МАШИНЫ, ДЕНЬГИ И ЖИЛЬЁ</button>
+<button id="safeContinue">▶ ПРОДОЛЖИТЬ БЕЗ ВОССТАНОВЛЕНИЯ</button>
+<p id="safeResult"></p>
+</div></section>
 <script>
 (function(){
- var status=document.getElementById('status'),retry=document.getElementById('retry');
- function boot(){
-  retry.hidden=true;status.textContent='Загружаю стабильную Crime City 12.0…';
-  try{var k='cc14Pre2DBoot',v=localStorage.getItem('crimecitysave5'),p=v?JSON.parse(v):null;if(!localStorage.getItem(k)&&p&&Array.isArray(p.owned)&&p.owned.some(Boolean)&&Number.isFinite(+p.wallet)){var snapshot={kind:'CrimeCityPortableSave',v:1,data:{}};for(var j=0;j<localStorage.length;j++){var kk=localStorage.key(j);if(kk&&kk.startsWith('crimecity'))snapshot.data[kk]=localStorage.getItem(kk)}localStorage.setItem(k,JSON.stringify(snapshot))}}catch(e){}
-
-  fetch('./game.html?fresh='+Date.now(),{cache:'no-store'}).then(function(r){
-   if(!r.ok)throw new Error('HTTP '+r.status);return r.text()
-  }).then(function(html){
-   if(html.length<20000||!/<html[\s>]/i.test(html)||!/<\/html>/i.test(html))throw new Error('Получен неполный файл игры');
-   html=html.replace(/<\/body>/i,'<scr'+'ipt src="./rescue2d.js?v=1"></scr'+'ipt></body>');
-   document.open();document.write(html);document.close();
-  }).catch(function(e){
-   status.textContent='Не удалось загрузить игру. Проверь интернет и попробуй ещё раз. '+e.message;retry.hidden=false;
-  });
- }
- retry.onclick=boot;boot();
+'use strict';
+const $=id=>document.getElementById(id);
+const status=$('status'),retry=$('retry');
+function read(k){try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}}
+function good(core){return !!core&&Array.isArray(core.owned)&&core.owned.length>=6&&core.owned.every(Boolean)&&Number.isFinite(Number(core.wallet))}
+function snapshot(){const data={};for(let i=0;i<localStorage.length;i++){let k=localStorage.key(i);if(k&&k.startsWith('crimecity'))data[k]=localStorage.getItem(k)}return {kind:'CrimeCityPortableSave',v:1,data}}
+function decode(src){
+ let txt=String(src||'').trim().replace(/[\u200B-\u200D\uFEFF]/g,'');
+ if(!txt)throw Error('Поле пустое. Вставь полный резервный код.');
+ let obj;const at=txt.indexOf('CC14:');
+ if(at>=0){
+  const token=(txt.slice(at+5).match(/^[A-Za-z0-9+/=_\-\s]+/)||[])[0];
+  if(!token)throw Error('После CC14: нет кода');
+  let bin;try{bin=atob(token.replace(/\s/g,'').replace(/-/g,'+').replace(/_/g,'/'))}catch(e){throw Error('Код обрезан')}
+  obj=JSON.parse(new TextDecoder().decode(Uint8Array.from(bin,c=>c.charCodeAt(0))));
+ }else obj=JSON.parse(txt);
+ if(obj?.kind!=='CrimeCityPortableSave'||!obj.data||!obj.data.crimecitysave5)throw Error('Не найдено сохранение Crime City');
+ let core=typeof obj.data.crimecitysave5==='string'?JSON.parse(obj.data.crimecitysave5):obj.data.crimecitysave5;
+ if(!Array.isArray(core.owned)||core.owned.length<6||!Number.isFinite(+core.wallet))throw Error('Некорректные данные машин или денег');
+ for(const [k,v] of Object.entries(obj.data)){if(!/^crimecity[a-z0-9_]+$/i.test(k)||typeof v!=='string'||v.length>50000)throw Error('Неожиданная запись');JSON.parse(v)}
+ return {core,data:obj.data}
+}
+function apply(data){
+ const old=snapshot();localStorage.setItem('cc12BeforeRestore_'+Date.now(),JSON.stringify(old));
+ for(const [k,v] of Object.entries(data))localStorage.setItem(k,v);
+ location.reload();
+}
+function localBackup(){
+ for(const key of ['cc14Pre2DBoot','cc14PreviousSnapshot']){
+  let obj=read(key);if(obj?.data?.crimecitysave5){let c=JSON.parse(obj.data.crimecitysave5);if(good(c))return {data:obj.data,core:c}}
+ }return null
+}
+function recovery(){
+ let current=read('crimecitysave5'),count=Array.isArray(current?.owned)?current.owned.filter(Boolean).length:0;
+ $('safeRecovery').style.display='block';
+ $('safeStatus').textContent='Сейчас на этом iPhone видно '+count+'/6 машин, баланс '+(Number.isFinite(+current?.wallet)?Number(current.wallet).toLocaleString('ru-RU')+' ₽':'неизвестен')+'.';
+}
+function launch(){
+ retry.hidden=true;status.textContent='Загружаю стабильную Crime City 12.0…';
+ try{if(!localStorage.getItem('cc14Pre2DBoot')&&good(read('crimecitysave5')))localStorage.setItem('cc14Pre2DBoot',JSON.stringify(snapshot()))}catch(e){}
+ fetch('./game.html?fresh='+Date.now(),{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('HTTP '+r.status);return r.text()}).then(html=>{
+ if(html.length<20000||!/<html[\s>]/i.test(html)||!/<\/html>/i.test(html))throw Error('Получен неполный файл игры');
+ html=html.replace(/<\/body>/i,'<scr'+'ipt src="./rescue2d.js?v=1"></scr'+'ipt></body>');
+ document.open();document.write(html);document.close()
+ }).catch(e=>{status.textContent='Не удалось загрузить игру: '+e.message;retry.hidden=false})
+}
+$('safeLocal').onclick=()=>{try{const v=localBackup();if(!v)throw Error('Локальная резервная копия с шестью машинами не найдена. Вставь код CC14 из переписки.');$('safeResult').textContent='✅ Найдена копия: '+v.core.owned.filter(Boolean).length+'/6 машин, '+Number(v.core.wallet).toLocaleString('ru-RU')+' ₽';if(confirm('Восстановить найденную резервную копию в этом приложении?'))apply(v.data)}catch(e){$('safeResult').textContent=e.message}};
+$('safeImport').onclick=()=>{try{let v=decode($('safeCode').value);$('safeResult').textContent='Найдено: '+v.core.owned.filter(Boolean).length+'/6 машин, '+Number(v.core.wallet).toLocaleString('ru-RU')+' ₽';if(confirm('Восстановить этот автопарк, деньги, тюнинг и недвижимость в ЭТОМ приложении?'))apply(v.data)}catch(e){$('safeResult').textContent='❌ '+e.message}};
+$('safeContinue').onclick=()=>{if(confirm('Профиль неполный. Продолжить без восстановления? Это может привести к записи стартовых данных.')){$('safeRecovery').style.display='none';launch()}};
+retry.onclick=launch;
+if(!good(read('crimecitysave5'))){recovery()}else launch();
 })();
 </script></body></html>
