@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, user-scalable=no">
 <meta name="theme-color" content="#08121e">
-<title>SKORBININ: CRIME CITY 12.2</title>
+<title>SKORBININ: CRIME CITY 12.3 · АРХИПЕЛАГ</title>
 <style>
 :root{color-scheme:dark}
 *{box-sizing:border-box}
@@ -77,7 +77,7 @@ h2{font-size:30px;line-height:1.1;margin:12px 0 8px}
 /* Persistent in-app backup and owner recovery controls */
 #saveToolsBtn{position:fixed;left:auto;right:12px;top:calc(env(safe-area-inset-top) + 192px);z-index:10;padding:7px 9px;font-size:10px;opacity:.75;background:#122b42ed;color:#f2d7a6;border:1px solid #d7a76588;border-radius:15px;font-weight:800;box-shadow:0 4px 15px #0008;cursor:pointer}
 #story12hud{display:none!important}
-#saveToolsBtn{right:9px;top:calc(env(safe-area-inset-top) + 177px);z-index:15}
+#saveToolsBtn{display:none!important}#ccMenuBtn{position:fixed;right:12px;top:calc(env(safe-area-inset-top) + 177px);z-index:18;background:#132b42;color:#fbe0a9;border:1px solid #d4ac6988;border-radius:14px;padding:11px 13px;font-weight:850;font-size:12px}#ccMenuPanel{display:none;position:fixed;z-index:92;inset:0;background:#04101deb;align-items:center;justify-content:center;padding:20px}#ccMenuPanel.open{display:flex}#ccMenuInner{width:min(94vw,440px);background:#10263b;border:1px solid #cba963;border-radius:19px;padding:20px;color:#f5e3be;max-height:90vh;overflow:auto}#ccMenuInner button{display:block;width:100%;margin:10px 0;padding:13px;color:#fff0d1;border:1px solid #cca467;background:#1c3950;border-radius:11px;font-weight:800}
 #saveToolsModal{display:none;position:fixed;inset:0;z-index:90;background:#050b16f2;align-items:center;justify-content:center;padding:18px;overflow:auto}
 #saveToolsModal.open{display:flex}
 #saveToolsInner{background:#102033;color:#eaf0fa;border:1px solid #cba76177;border-radius:22px;padding:18px;max-width:480px;width:100%;box-shadow:0 12px 48px #000a;max-height:90vh;overflow:auto}
@@ -157,10 +157,12 @@ h2{font-size:30px;line-height:1.1;margin:12px 0 8px}
 <button id="saveToolsClose" type="button">ВЕРНУТЬСЯ В ИГРУ</button>
 <p id="saveToolsStatus" aria-live="polite" style="font-size:13px;color:#ffdd9b"></p>
 </div></div>
+<button id="ccMenuBtn" type="button">☰ МЕНЮ</button><section id="ccMenuPanel" aria-label="Меню игры"><div id="ccMenuInner"><h2>☰ CRIME CITY · МЕНЮ</h2><button id="ccOpenSave" type="button">💾 ПРОГРЕСС · СОХРАНЕНИЯ</button><button id="ccMenuWorld" type="button">🗺 КАРТА РАЙОНОВ</button><button id="ccCloseMenu" type="button">▶ ВЕРНУТЬСЯ В ГОРОД</button><p>Все покупки, недвижимость, автомобили и задания остаются в текущей игре.</p></div></section>
 
 <script>
 (()=>{
 'use strict';
+
  const weatherButton=document.getElementById('livingWeather');
  weatherButton.addEventListener('click',()=>{rainEnabled=!rainEnabled;weatherButton.textContent=rainEnabled?'🌧️ ДОЖДЬ':'☀️ СУХО';});
  const canvas=document.getElementById('game');
@@ -295,21 +297,21 @@ function saveCity9(){try{localStorage.setItem('crimecity9',JSON.stringify(empire
 function currentDistrict(x,y){return x<1100?'СТАРЫЙ ЦЕНТР':x>2450?'НАБЕРЕЖНАЯ':y<1400?'ДЕЛОВОЙ РАЙОН':y>2250?'ВИЛЛЫ НА ХОЛМЕ':'НОЧНОЙ КВАРТАЛ';}
 const CANAL={x:2850,w:116};
 function onBridge(x,y){return HROADS.some(v=>Math.abs(y-v)<75);}
-function cityWaterBlocks(x,y){return x>CANAL.x&&x<CANAL.x+CANAL.w&&!onBridge(x,y);}
+function cityWaterBlocks(x,y){const deck=BRIDGES123.some(b=>x>=b.x&&x<=b.x+b.w&&y>=b.y&&y<=b.y+b.h);const sea=(x>=4440&&x<5640&&y<4560)||(y>=4560&&y<5760)||(x>=6900&&y>=5760);const old=x>CANAL.x&&x<CANAL.x+CANAL.w&&y<4560&&!onBridge(x,y);return !deck&&(sea||old);}
 function drawWaterfront(t){
  ctx.save();
  // Promenade and embankment. Bridges preserve the navigable grid.
  const x=CANAL.x,w=CANAL.w;
- ctx.fillStyle='#66747b';ctx.fillRect(x-31,0,17,world.h);ctx.fillRect(x+w+14,0,17,world.h);
- ctx.fillStyle='#142f40';ctx.fillRect(x,0,w,world.h);
+ ctx.fillStyle='#66747b';ctx.fillRect(x-31,0,17,4560);ctx.fillRect(x+w+14,0,17,4560);
+ ctx.fillStyle='#142f40';ctx.fillRect(x,0,w,4560);
  const water=ctx.createLinearGradient(x,0,x+w,0);water.addColorStop(0,'#164254');water.addColorStop(.5,'#20576a');water.addColorStop(1,'#0a2b40');ctx.fillStyle=water;ctx.fillRect(x,0,w,world.h);
- for(let y=20;y<world.h;y+=44){
+ for(let y=20;y<4560;y+=44){
   const offset=6*Math.sin(t*.0008+y*.02);
   ctx.strokeStyle=y%3===0?'#b0c5ad36':'#57a5c04a';ctx.lineWidth=1.5;
   ctx.beginPath();ctx.moveTo(x+14+offset,y);ctx.bezierCurveTo(x+41,y-9,x+69,y+8,x+w-14,y);ctx.stroke();
  }
- ctx.fillStyle='#d5ba895e';for(let y=22;y<world.h;y+=77){ctx.fillRect(x-30,y,6,12);ctx.fillRect(x+w+22,y,6,12);}
- for(const road of HROADS){
+ ctx.fillStyle='#d5ba895e';for(let y=22;y<4560;y+=77){ctx.fillRect(x-30,y,6,12);ctx.fillRect(x+w+22,y,6,12);}
+ for(const road of HROADS.filter(y=>y<=4560)){
   ctx.fillStyle='#283642';ctx.fillRect(x-16,road-77,w+32,154);
   ctx.fillStyle='#4e606c';ctx.fillRect(x-16,road-71,w+32,142);
   ctx.fillStyle='#c6d9db7d';ctx.fillRect(x-16,road-70,w+32,3);ctx.fillRect(x-16,road+67,w+32,3);
@@ -494,14 +496,16 @@ function changeWorldCar(kind){
  player.inCar=ownedCar;player.x=ownedCar.x;player.y=ownedCar.y;
  showToast('⭐ ВЫБРАНА '+CAR_NAMES[kind]);
 }
+function arch123Labels(mc,scale){for(const p of [{x:6700,y:320,text:'NIGHT ISLAND'},{x:3300,y:6020,text:'SOUTH GARDENS'}]){mc.fillStyle='#f5d89d';mc.font='bold 11px system-ui';mc.textAlign='center';mc.fillText(p.text,p.x*scale,p.y*scale)}}
 function cityMapDraw(){
  const mc=worldMapCanvas.getContext('2d'),w=worldMapCanvas.width,h=worldMapCanvas.height;
- const scale=w/world.w;
+ const scale=Math.min(w/world.w,h/world.h);
  mc.clearRect(0,0,w,h);mc.fillStyle='#102234';mc.fillRect(0,0,w,h);
  mc.fillStyle='#2d4358';for(const r of roads)mc.fillRect(r.x*scale,r.y*scale,r.w*scale,r.h*scale);
  mc.fillStyle='#0d4a68';mc.fillRect(CANAL.x*scale,0,CANAL.w*scale,h);mc.fillStyle='#466276';for(const y of HROADS)mc.fillRect(CANAL.x*scale,(y-70)*scale,CANAL.w*scale,140*scale);
- mc.fillStyle='#1a2a39';for(const b of blocks)mc.fillRect(b.x*scale,b.y*scale,b.w*scale,b.h*scale);
+ mc.fillStyle='#0e5870';mc.fillRect(4440*scale,0,1200*scale,4560*scale);mc.fillRect(0,4560*scale,8000*scale,1200*scale);mc.fillRect(6900*scale,5760*scale,1100*scale,1840*scale);mc.fillStyle='#b9c8c7';for(const b of BRIDGES123)mc.fillRect(b.x*scale,b.y*scale,b.w*scale,b.h*scale);mc.fillStyle='#1a2a39';for(const b of blocks)mc.fillRect(b.x*scale,b.y*scale,b.w*scale,b.h*scale);
  const mark=(x,y,icon,label,color)=>{mc.beginPath();mc.fillStyle=color;mc.arc(x*scale,y*scale,12,0,7);mc.fill();mc.font='15px system-ui';mc.textAlign='center';mc.fillText(icon,x*scale,y*scale+5);mc.font='bold 10px system-ui';mc.fillStyle='#fff';mc.fillText(label,x*scale,y*scale-17);};
+ arch123Labels(mc,scale);
  for(const m of CITY_SERVICES)mark(m.x,m.y,m.icon,m.name,'#27546a');
  if(worldEvent)mark(worldEvent.x,worldEvent.y,'🎲',worldEvent.name,'#276581');
  for(const m of CITY_JOBS)mark(m.x,m.y,m.icon,m.label,'#355672');
@@ -542,7 +546,7 @@ let best=0;
 try{best=+(localStorage.getItem('crimecitybest4')||0)}catch(e){}
 bestEl.textContent=best;
 
-const world={w:4440,h:4560};
+const world={w:8000,h:7600};
 const roads=[];
 const blocks=[];
 const crosswalks=[];
@@ -590,7 +594,7 @@ resize();
 // 12.1 Eastside: all original 12.0 roads, buildings and property coordinates remain unchanged.
 function addEastside121(){
  const ex=[3530,3970,4330];
- for(const x of ex)roads.push({type:'v',x:x-77,y:0,w:154,h:world.h});
+ for(const x of ex)roads.push({type:'v',x:x-77,y:0,w:154,h:4560});
  const xb=[3200,3530,3970,4330];
  const yb=[280,760,1240,1720,2200,2680,3060];
  for(let col=0;col<xb.length-1;col++){
@@ -660,8 +664,8 @@ function drawEastsideArchitecture121(){
 
 function addSouthside122(){
  // Only append south of y=3200; never move any original building or property.
- const xroads=[...VROADS,3530,3970,4330].sort((a,b)=>a-b),ys=[3200,3510,3990,4470,world.h];
- const xs=[0,...xroads,world.w],rw=154;
+ const xroads=[...VROADS,3530,3970,4330].sort((a,b)=>a-b),ys=[3200,3510,3990,4470,4560];
+ const xs=[0,...xroads,4440],rw=154;
  for(let j=0;j<ys.length-1;j++)for(let i=0;i<xs.length-1;i++){
   const a=xs[i],b=xs[i+1],top=ys[j],bottom=ys[j+1],x=a+(i===0?27:rw/2+18),y=top+(j===0?23:rw/2+18);
   const w=(b-a)-(i===0?45:rw/2+34)-(i===xs.length-2?25:rw/2+16);
@@ -715,13 +719,84 @@ function drawSouthside122(){
   ctx.restore();
  }
 }
+
+// 12.3: two new islands without changing any original 12.2 building coordinates.
+// Original roads remain inside the original 4440 × 4560 region.
+const ARCH123={east:{x:5640,y:0,w:2360,h:4560},south:{x:0,y:5760,w:6900,h:1840}};
+const BRIDGES123=[{kind:'h',x:4440,y:2603,w:1200,h:154},{kind:'v',x:2123,y:4560,w:154,h:1200},{kind:'v',x:5943,y:4560,w:154,h:1200}];
+
+function addArchipelago123(){
+ const east=ARCH123.east,south=ARCH123.south;
+ const ex=[5800,6020,6440,6860,7280,7720],ey=[280,760,1240,1720,2200,2680,3060,3510,3990,4470];
+ const sx=[280,760,1240,1720,2200,2680,3060,3530,3970,4460,4940,5420,6020,6500],sy=[5980,6400,6860,7330];
+ for(const x of ex)roads.push({type:'v',x:x-77,y:0,w:154,h:4560});
+ for(const y of ey)roads.push({type:'h',x:5640,y:y-77,w:2360,h:154});
+ for(const x of sx)roads.push({type:'v',x:x-77,y:5760,w:154,h:1840});
+ for(const y of sy)roads.push({type:'h',x:0,y:y-77,w:6900,h:154});
+ for(const b of BRIDGES123)roads.push({type:b.kind,x:b.x-(b.kind==='h'?110:0),y:b.y-(b.kind==='v'?110:0),w:b.w+(b.kind==='h'?220:0),h:b.h+(b.kind==='v'?220:0),bridge123:true});
+ const fill=(r,xs,ys,zone)=>{
+  const xx=[r.x,...xs,r.x+r.w],yy=[r.y,...ys,r.y+r.h];
+  for(let j=0;j<yy.length-1;j++)for(let i=0;i<xx.length-1;i++){
+   const x=xx[i]+(i?93:23),y=yy[j]+(j?93:23),w=xx[i+1]-x-(i===xx.length-2?23:93),h=yy[j+1]-y-(j===yy.length-2?23:93);
+   if(w<72||h<72)continue;
+   const style=(i+j*3)%4,green=zone==='south';
+   blocks.push({x,y,w,h,style,roof:green?'#587852':'#405668',win:green?'#f9d59e':'#9dcee2',arch123:true,archZone:zone});
+   if(green){trees.push({x:x+22,y:y+23,s:1.35});trees.push({x:x+w-25,y:y+h-24,s:1.2})}
+   else{lamps.push({x:x-19,y:y-19});if(i%2===0)signs.push({x:x+w-25,y:y+22,text:['CLUB','CASINO','HOTEL','MARKET'][style],hue:style})}
+  }
+ };
+ fill(east,ex,ey,'east');fill(south,sx,sy,'south');
+ for(const x of ex)for(const y of ey)crosswalks.push({x:x-80,y:y-83,w:160,h:18,dir:'h'});
+ for(const x of sx)for(const y of sy)crosswalks.push({x:x-80,y:y-83,w:160,h:18,dir:'h'});
+ for(let i=0;i<18;i++){
+  const eastSide=i<9,x=eastSide?ex[i%ex.length]+37:sx[i%sx.length]-37,y=eastSide?400+(i*353)%3650:5920+(i*129)%1250;
+  if(isRoad(x,y,0)&&!inBlock(x,y,20))cars.push({x,y,color:TYPES[i%6].color,kind:i%6,angle:Math.PI/2,w:28,h:52,occupied:false});
+ }
+}
+function drawIslandGround123(){
+ for(const [r,color,label] of [[ARCH123.east,'#334354','NIGHT ISLAND'],[ARCH123.south,'#456a4e','SOUTH GARDENS']]){
+  ctx.fillStyle=color;ctx.fillRect(r.x,r.y,r.w,r.h);ctx.fillStyle='#d7e5b70e';ctx.fillRect(r.x+13,r.y+13,r.w-26,r.h-26);
+  ctx.fillStyle='#f3d49d44';ctx.font='bold 34px system-ui';ctx.textAlign='center';ctx.fillText(label,r.x+r.w/2,r.y+190);
+ }
+}
+function drawArchipelagoWater123(t){
+ ctx.save();ctx.fillStyle='#13485f';ctx.fillRect(4440,0,1200,4560);ctx.fillRect(0,4560,8000,1200);ctx.fillRect(6900,5760,1100,1840);
+ for(const b of BRIDGES123){
+  ctx.fillStyle='#b6c7c9';ctx.fillRect(b.x-9,b.y-9,b.w+18,b.h+18);
+  ctx.fillStyle='#253848';ctx.fillRect(b.x,b.y,b.w,b.h);ctx.strokeStyle='#f6dda4';ctx.lineWidth=3;ctx.setLineDash([29,23]);ctx.beginPath();
+  if(b.kind==='h'){ctx.moveTo(b.x,b.y+b.h/2);ctx.lineTo(b.x+b.w,b.y+b.h/2)}
+  else{ctx.moveTo(b.x+b.w/2,b.y);ctx.lineTo(b.x+b.w/2,b.y+b.h)}
+  ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle='#abcdd2';if(b.kind==='h')for(let x=b.x+30;x<b.x+b.w;x+=62){ctx.fillRect(x,b.y-12,5,8);ctx.fillRect(x,b.y+b.h+4,5,8)}
+  else for(let y=b.y+30;y<b.y+b.h;y+=62){ctx.fillRect(b.x-12,y,8,5);ctx.fillRect(b.x+b.w+4,y,8,5)}
+ }
+ ctx.restore();
+}
+function drawIslandDetails123(t){
+ for(const b of blocks){
+  if(!b.arch123||b.x+b.w<cam.x-20||b.x>cam.x+W+20||b.y+b.h<cam.y-20||b.y>cam.y+H+20)continue;
+  const x=b.x,y=b.y,w=b.w,h=b.h;ctx.save();
+  if(b.archZone==='east'){
+   ctx.fillStyle='#34475a';ctx.fillRect(x+12,y+12,w-24,h-24);
+   for(let i=0;i<3;i++){ctx.fillStyle=i%2?'#263748':'#7595a2';ctx.fillRect(x+18,y+24+i*(h-48)/3,w-36,Math.max(7,h*.13))}
+   ctx.fillStyle='#bd60b4';ctx.shadowColor='#d45fc1';ctx.shadowBlur=9;ctx.fillRect(x+w*.22,y+h*.65,w*.56,5);ctx.shadowBlur=0;
+  }else{
+   ctx.fillStyle='#d3bea0';ctx.fillRect(x+15,y+16,w*.44,h*.48);
+   ctx.fillStyle='#456e53';ctx.fillRect(x+w*.59,y+17,w*.3,h*.29);
+   ctx.fillStyle='#327e91';ctx.fillRect(x+w*.6,y+h*.57,w*.27,h*.21);
+   ctx.strokeStyle='#aed6d8';ctx.strokeRect(x+w*.6,y+h*.57,w*.27,h*.21);
+  }
+  ctx.restore();
+ }
+}
+
 function buildCity(){
   roads.length=0;blocks.length=0;crosswalks.length=0;lamps.length=0;signs.length=0;trees.length=0;decals.length=0;cars.length=0;traffic.length=0;police.length=0;
   const vertical=VROADS;
   const horizontal=HROADS;
   const rw=154;
-  for(const x of vertical) roads.push({type:'v',x:x-rw/2,y:0,w:rw,h:world.h});
-  for(const y of horizontal) roads.push({type:'h',x:0,y:y-rw/2,w:world.w,h:rw});
+  for(const x of vertical) roads.push({type:'v',x:x-rw/2,y:0,w:rw,h:4560});
+  for(const y of horizontal) roads.push({type:'h',x:0,y:y-rw/2,w:4440,h:rw});
 
   // Blocks from road gaps
   const xs=[0,...vertical,3200];
@@ -747,6 +822,7 @@ function buildCity(){
   addSpecialDistricts();
   addEastside121();
   addSouthside122();
+  addArchipelago123();
   // Sidewalk pedestrians keep to building frontage and walk around blocks.
   citizens.length=0;
   for(const b of blocks){
@@ -1484,8 +1560,8 @@ function drawRoadMarkings(){
   if(vertical){ctx.fillRect(x+7,y,3,h);ctx.fillRect(x+w-10,y,3,h);}
   else {ctx.fillRect(x,y+7,w,3);ctx.fillRect(x,y+h-10,w,3);}
   ctx.strokeStyle='#e3ce8eaa';ctx.lineWidth=2.7;ctx.setLineDash([27,22]);ctx.beginPath();
-  if(vertical){ctx.moveTo(x+w/2,0);ctx.lineTo(x+w/2,world.h);}
-  else {ctx.moveTo(0,y+h/2);ctx.lineTo(world.w,y+h/2);}
+  if(vertical){ctx.moveTo(x+w/2,y);ctx.lineTo(x+w/2,y+h);}
+  else {ctx.moveTo(x,y+h/2);ctx.lineTo(x+w,y+h/2);}
   ctx.stroke();ctx.setLineDash([]);
  }
  for(const c of crosswalks){
@@ -1731,16 +1807,19 @@ function render(timeMs){
 
   const bg=ctx.createLinearGradient(0,0,0,world.h); bg.addColorStop(0,'#172331'); bg.addColorStop(1,'#121d2a'); ctx.fillStyle=bg; ctx.fillRect(0,0,world.w,world.h);
   drawNeighborhoods();
+  drawIslandGround123();
   // Sidewalk/road structure
   for(const d of decals){ctx.fillStyle='rgba(0,0,0,'+d.a+')'; ctx.beginPath(); ctx.arc(d.x,d.y,d.r,0,Math.PI*2); ctx.fill();}
   ctx.fillStyle='#283643';
   for(const r of roads) ctx.fillRect(r.x,r.y,r.w,r.h);
   drawRoadMarkings();
   drawWaterfront(timeMs);
+  drawArchipelagoWater123(timeMs);
   drawDistrictGround();
   drawBuildings();
   drawEastsideArchitecture121();
   drawSouthside122();
+  drawIslandDetails123(timeMs);
   drawPropertyFacades(timeMs);
   drawLampsAndTrees();
   drawSigns(timeMs);
@@ -1831,7 +1910,7 @@ function initSaveTools114(){
   const modal=document.getElementById('saveToolsModal');
   const field=document.getElementById('saveToolsData');
   const status=document.getElementById('saveToolsStatus');
-  const keys=['crimecitysave5','crimecityempire7','crimecity9','crimecitybest4'];
+  const keys=['crimecitysave5','crimecityempire7','crimecity9','crimecitybest4','crimecitystory12'];
   const show=s=>{status.textContent=s;};
   btn.onclick=()=>{modal.classList.add('open');show('');};
   document.getElementById('saveToolsClose').onclick=()=>{modal.classList.remove('open');};
@@ -1900,10 +1979,12 @@ buildCity();
 selectedMode=3;
 start();
 freeExitBtn.style.display='none';
-objectiveEl.textContent='🌃 CRIME CITY 12.2 · БОЛЬШОЙ ГОРОД';
+objectiveEl.textContent='🌃 CRIME CITY 12.3 · АРХИПЕЛАГ';
 updateHUD();
 render(0);
 })();
 </script>
-</body>
+<script>
+(()=>{const menu=document.getElementById('ccMenuPanel'),open=document.getElementById('ccMenuBtn');open.addEventListener('click',()=>menu.classList.add('open'));document.getElementById('ccCloseMenu').onclick=()=>menu.classList.remove('open');document.getElementById('ccOpenSave').onclick=()=>{menu.classList.remove('open');document.getElementById('saveToolsBtn').click()};document.getElementById('ccMenuWorld').onclick=()=>{menu.classList.remove('open');document.getElementById('worldMapBtn')?.click()};})();
+</script></body>
 </html>
