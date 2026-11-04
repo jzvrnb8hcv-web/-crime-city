@@ -723,7 +723,7 @@ function buildCity(){
     const verticalMode=i%2===0;
     const dir=(Math.floor(i/2)%2===0)?1:-1;
     const axis=verticalMode?vertical[Math.floor(i/2)%vertical.length]:horizontal[Math.floor(i/2)%horizontal.length];
-    const along=160+(i*193)%(world.w-320);
+    const along=160+(i*193)%((verticalMode?world.h:world.w)-320);
     traffic.push({x:verticalMode?axis+dir*40:along,
       y:verticalMode?along:axis-dir*40,dir,vertical:verticalMode,
              kind:i%3,color:i%13===0?'#172c45':TYPES[i%3].color,
@@ -743,7 +743,7 @@ function findLaneSlot(vehicle,farFromPlayer=0){
   for(let k=0;k<100;k++){
     const vertical=Math.random()<.5,dir=Math.random()<.5?1:-1;
     const road=(vertical?VROADS:HROADS)[Math.floor(Math.random()*(vertical?VROADS:HROADS).length)];
-    const along=rand(60,world.w-60);
+    const along=rand(60,(vertical?world.h:world.w)-60);
     const x=vertical?road+dir*40:along,y=vertical?along:road-dir*40;
     if(Math.hypot(x-player.x,y-player.y)<farFromPlayer)continue;
     if(canMoveCar(x,y,16) && !vehicleOverlap(x,y,vehicle,9))return{x,y,vertical,dir};
