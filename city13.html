@@ -1,6 +1,6 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover,user-scalable=no,minimum-scale=1,maximum-scale=1"><meta name="theme-color" content="#07131e"><title>Crime City 13.3 · Downtown Reborn</title><style>
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover,user-scalable=no,minimum-scale=1,maximum-scale=1"><meta name="theme-color" content="#07131e"><title>Crime City 13.4 · Downtown Reborn</title><style>
 *{box-sizing:border-box}html,body{height:100%;height:100dvh;width:100%;margin:0;overflow:hidden;overscroll-behavior:none;background:#050b12;font-family:system-ui,-apple-system,Segoe UI,Arial;color:#e9f4ff;touch-action:none}canvas{width:100%;height:100%;display:block;touch-action:none}#game{position:fixed;inset:0;width:100vw;height:100dvh}html,body,button,#joy,#nub,#ui{touch-action:none!important;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}#ui{position:fixed;inset:0;width:100vw;height:100dvh;pointer-events:none;z-index:5;overflow:hidden}#top{position:absolute;left:12px;right:12px;top:max(10px,env(safe-area-inset-top));display:flex;justify-content:space-between;align-items:flex-start;gap:8px}.panel{background:linear-gradient(145deg,#091522e8,#13273dde);border:1px solid #9abdd62e;box-shadow:0 6px 22px #0008;border-radius:14px;padding:8px 11px;backdrop-filter:blur(8px)}.brand{font-size:10px;color:#efc77e;letter-spacing:2px;font-weight:900}.ttl{font-size:14px;font-weight:900}.sub{font-size:11px;color:#9cb2cb}.money{font-size:14px;font-weight:800;color:#f8d58b}#goal{position:absolute;top:86px;left:50%;transform:translateX(-50%);width:min(95%,430px);background:#081522dc;border:1px solid #e1b66e77;border-radius:12px;padding:8px 12px;text-align:center;font-size:12px;box-shadow:0 8px 25px #0008}#goal b{color:#f4cf83}#bottom{position:absolute;bottom:max(16px,env(safe-area-inset-bottom));left:0;right:0;display:flex;align-items:end;justify-content:space-between;padding:0 18px;gap:8px}#joy{width:126px;height:126px;border-radius:50%;border:2px solid #d6e6fa55;background:#314b6655;pointer-events:auto;position:relative;touch-action:none;box-shadow:inset 0 0 20px #112740}#nub{position:absolute;width:52px;height:52px;left:35px;top:35px;border-radius:50%;background:linear-gradient(140deg,#b0cbe3,#446580);border:2px solid #d8edff99;box-shadow:0 4px 18px #0016}.btn{pointer-events:auto;border:1px solid #eac17d88;border-radius:15px;color:#fff;background:#19334cd9;box-shadow:0 6px 20px #0008;font-weight:900;letter-spacing:.4px;touch-action:none}.btn:active{transform:scale(.96);background:#40678b}#action{width:103px;height:67px;background:#ac793ce6;color:#07121e;border-color:#ffd89d;font-size:13px}#boost{width:100px;height:55px;font-size:11px;margin-bottom:4px}#boost.on{background:#ab6530;color:#fff;border:2px solid #ffe2a3;box-shadow:0 0 20px #e9a638a3}#boostmeter{align-self:center}#controls{display:flex;flex-direction:column;align-items:end;gap:8px}#nav{position:absolute;right:9px;top:148px;display:flex;gap:5px;pointer-events:auto;flex-wrap:wrap;justify-content:flex-end;max-width:calc(100% - 15px)}.small{font-size:10px;padding:9px 8px}#garagepanel.hidden{display:none!important}#garagelist button{width:100%;padding:14px;text-align:left;margin:7px 0;border:1px solid #627c97;border-radius:12px;background:#152a3d;color:#eff7ff;font-weight:650}#garagelist button.active{border-color:#f7ca71;background:#353946}#garagelist button:disabled{opacity:.43}.hint{position:absolute;bottom:170px;left:50%;transform:translateX(-50%);color:#dfefff;font-size:11px;text-shadow:0 2px 5px black;text-align:center;width:90%}#map{position:absolute;right:12px;top:208px;width:140px;height:140px;border-radius:12px;border:1px solid #c9ad75aa;background:#081422d6;display:none;pointer-events:none}#map.visible{display:block}#toast{position:absolute;top:44%;left:50%;transform:translate(-50%,-50%);background:#071828ec;border:1px solid #cba96f;border-radius:13px;font-weight:800;padding:13px 20px;opacity:0;transition:opacity .25s;text-align:center;max-width:90%;white-space:pre-line}.help{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:min(92%,430px);padding:21px;background:#071421f4;border:1px solid #dbb77e;border-radius:20px;box-shadow:0 15px 50px #000a;pointer-events:auto;text-align:left}.help h2{margin:0 0 9px;color:#f2cd8c}.help p{font-size:13px;line-height:1.55;color:#ccd8e5}.help button{display:block;width:100%;padding:13px;margin-top:13px}.hidden{display:none!important}@media(max-height:650px){#joy{width:106px;height:106px}#nub{left:28px;top:28px;width:46px;height:46px}#goal{top:73px}#nav{top:83px}#map{top:125px}}@media(max-width:375px){.ttl{font-size:12px}#goal{font-size:11px}.panel{padding:7px}}
-</style></head><body><canvas id="game"></canvas><canvas id="map"></canvas><div id="ui"><div id="top"><div class="panel"><div class="brand">SKORBININ · CRIME CITY</div><div class="ttl">13.3 <span style="color:#f0c583">ISOMETRIC REBORN</span></div><div class="sub" id="district">DOWNTOWN · NIGHT</div></div><div class="panel" style="text-align:right"><div class="money" id="money">💰 0 ₽</div><div class="sub" id="stat">🚘 SPORT · ★☆☆☆☆</div></div></div><div id="goal"><b>ИЗОМЕТРИЧЕСКИЙ РАЙОН</b><div id="objective">Доедь до отеля, чтобы начать операцию.</div></div><div id="nav"><button class="btn small" id="mapbtn">🗺 КАРТА</button><button class="btn small" id="carbtn">🚗 МАШИНА</button><button class="btn small" id="chaosbtn">🚨 ПОГОНЯ</button><button class="btn small" id="lapbtn">🏁 СПРИНТ</button><button class="btn small" id="garagebtn">🏎 ГАРАЖ</button><button class="btn small" id="helpbtn">?</button></div><div class="hint" id="hint">Джойстик — езда · ТУРБО — нажми один раз · 🏁 СПРИНТ · 🚨 ПОГОНЯ — взаимодействие</div><div id="bottom"><div id="joy"><div id="nub"></div></div><div id="controls"><button class="btn" id="boost">⚡ ТУРБО: ВЫКЛ</button><div id="boostmeter" style="width:89px;height:4px;background:#ffffff33;border-radius:8px;overflow:hidden"><div id="boostfill" style="height:100%;width:100%;background:#f5c361;transition:width .15s"></div></div><button class="btn" id="action">ДЕЙСТВИЕ</button></div></div><div id="toast"></div><div id="garagepanel" class="hidden" style="position:absolute;inset:0;background:#050b12f5;pointer-events:auto;z-index:40;overflow:auto;padding:35px 20px 110px"><div style="max-width:550px;margin:auto"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h2 style="color:#f5cb86;margin:0">МОЙ АВТОПАРК</h2><button id="closegarage" class="btn small">✕</button></div><p>Твои машины и недвижимость из Crime City 12.0</p><div id="garagelist"></div><h3>НЕДВИЖИМОСТЬ</h3><div id="estateinfo" style="line-height:2"></div><p><a href="./game.html" style="color:#f5d393">↩ Старый город 12.0</a></p></div></div><div class="help" id="help"><h2>CRIME CITY 13.3</h2><p><b>Новая основная версия:</b> все деньги, машины, тюнинг и недвижимость из 12.0 загружаются автоматически. Старый город открывается из ГАРАЖА.</p><p><b>Первый изометрический район</b> — отдельный эксперимент на том же сайте. Основная Crime City и твои покупки не изменяются.</p><p>Езжай к золотому маркеру у отеля, начни ограбление, найди движущийся конвой, останови его, забери груз и уйди от полиции в свой гараж.</p><p>Управление на телефоне: джойстик — направление, ТУРБО — переключаемое ускорение с зарядом, ПОГОНЯ — 32 секунды с полицией, СПРИНТ — 6 контрольных точек, ГАРАЖ — твой автопарк из 12.0, ДЕЙСТВИЕ — взять груз или начать миссию. Есть переключение Porsche / G63 / Phantom и карта.</p><button class="btn" id="start">ПОГНАЛИ 🚘</button></div></div><script>
+</style></head><body><canvas id="game"></canvas><canvas id="map"></canvas><div id="ui"><div id="top"><div class="panel"><div class="brand">SKORBININ · CRIME CITY</div><div class="ttl">13.4 <span style="color:#f0c583">BRUTAL GARAGE</span></div><div class="sub" id="district">DOWNTOWN · NIGHT</div></div><div class="panel" style="text-align:right"><div class="money" id="money">💰 0 ₽</div><div class="sub" id="stat">🚘 SPORT · ★☆☆☆☆</div></div></div><div id="goal"><b>ИЗОМЕТРИЧЕСКИЙ РАЙОН</b><div id="objective">Доедь до отеля, чтобы начать операцию.</div></div><div id="nav"><button class="btn small" id="mapbtn">🗺 КАРТА</button><button class="btn small" id="carbtn">🚗 МАШИНА</button><button class="btn small" id="chaosbtn">🚨 ПОГОНЯ</button><button class="btn small" id="lapbtn">🏁 СПРИНТ</button><button class="btn small" id="garagebtn">🏎 ГАРАЖ</button><button class="btn small" id="helpbtn">?</button></div><div class="hint" id="hint">Джойстик — езда · ТУРБО — нажми один раз · 🏁 СПРИНТ · 🚨 ПОГОНЯ — взаимодействие</div><div id="bottom"><div id="joy"><div id="nub"></div></div><div id="controls"><button class="btn" id="boost">⚡ ТУРБО: ВЫКЛ</button><div id="boostmeter" style="width:89px;height:4px;background:#ffffff33;border-radius:8px;overflow:hidden"><div id="boostfill" style="height:100%;width:100%;background:#f5c361;transition:width .15s"></div></div><button class="btn" id="action">ДЕЙСТВИЕ</button></div></div><div id="toast"></div><div id="garagepanel" class="hidden" style="position:absolute;inset:0;background:#050b12f5;pointer-events:auto;z-index:40;overflow:auto;padding:35px 20px 110px"><div style="max-width:550px;margin:auto"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h2 style="color:#f5cb86;margin:0">МОЙ АВТОПАРК</h2><button id="closegarage" class="btn small">✕</button></div><p>Твои машины и недвижимость из Crime City 12.0</p><div id="garagelist"></div><h3>НЕДВИЖИМОСТЬ</h3><div id="estateinfo" style="line-height:2"></div><p><a href="./game.html" style="color:#f5d393">↩ Старый город 12.0</a></p></div></div><div class="help" id="help"><h2>CRIME CITY 13.4</h2><p><b>Новая основная версия:</b> все деньги, машины, тюнинг и недвижимость из 12.0 загружаются автоматически. Старый город открывается из ГАРАЖА.</p><p><b>Первый изометрический район</b> — отдельный эксперимент на том же сайте. Основная Crime City и твои покупки не изменяются.</p><p>Езжай к золотому маркеру у отеля, начни ограбление, найди движущийся конвой, останови его, забери груз и уйди от полиции в свой гараж.</p><p>Управление на телефоне: джойстик — направление, ТУРБО — переключаемое ускорение с зарядом, ПОГОНЯ — 32 секунды с полицией, СПРИНТ — 6 контрольных точек, ГАРАЖ — твой автопарк из 12.0, ДЕЙСТВИЕ — взять груз или начать миссию. Есть переключение Porsche / G63 / Phantom и карта.</p><button class="btn" id="start">ПОГНАЛИ 🚘</button></div></div><script>
 (()=>{'use strict';
 const cv=document.getElementById('game'),ctx=cv.getContext('2d'),mini=document.getElementById('map'),mc=mini.getContext('2d');let W=0,H=0,dpr=1;
 function resize(){dpr=Math.min(2,devicePixelRatio||1);W=document.documentElement.clientWidth||innerWidth;H=window.visualViewport?window.visualViewport.height:innerHeight;cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);mini.width=280;mini.height=280}addEventListener('resize',resize);if(window.visualViewport)window.visualViewport.addEventListener('resize',resize);resize();
@@ -83,26 +83,151 @@ function ground(){ctx.fillStyle='#091924';ctx.fillRect(0,0,W,H);quad(0,0,WORLD,W
  // fountain
  const q=pt(1050,1035);ctx.fillStyle='#6bb0c374';ctx.beginPath();ctx.ellipse(q.x,q.y,24,12,0,0,Math.PI*2);ctx.fill();
 }
-function car3d(x,y,angle,type,color,scale=1){let spec=typeof type==='number'?cars[type]:type;const L=spec.length*scale,B=spec.width*scale,Z=spec.height*scale;const c=Math.cos(angle),s=Math.sin(angle);const at=(u,v,z)=>pt(x+u*c-v*s,y+u*s+v*c,z);
- const P=[at(-L/2,-B/2,0),at(L/2,-B/2,0),at(L/2,B/2,0),at(-L/2,B/2,0)],Q=[at(-L/2,-B/2,Z),at(L/2,-B/2,Z),at(L/2,B/2,Z),at(-L/2,B/2,Z)];
- const shadow=pt(x+7,y+7,0);ctx.save();ctx.fillStyle='#0008';ctx.beginPath();ctx.ellipse(shadow.x,shadow.y,L*.39,B*.38,0,0,Math.PI*2);ctx.fill();ctx.restore();
- polygon([P[1],P[2],Q[2],Q[1]],'#131e26');polygon([P[2],P[3],Q[3],Q[2]],'#19242c');polygon(Q,color,'#f5faff66',.7);
- // front windshield, roof, rear glass
- polygon([at(-L*.23,-B*.42,Z+.5),at(L*.02,-B*.42,Z+.5),at(L*.02,B*.42,Z+.5),at(-L*.23,B*.42,Z+.5)],'#406a81');
- polygon([at(L*.025,-B*.4,Z+.8),at(L*.25,-B*.35,Z+.8),at(L*.25,B*.35,Z+.8),at(L*.025,B*.4,Z+.8)],'#273f50');
- line(x,y,x+L*.25*c,y+L*.25*s,'#ffffff32',1,Z+1);
- for(let side of [-1,1]){let wh1=at(-L*.31,side*B*.53,3),wh2=at(L*.31,side*B*.53,3);for(let w of [wh1,wh2]){ctx.fillStyle='#081018';ctx.beginPath();ctx.ellipse(w.x,w.y,5.7,3.8,0,0,Math.PI*2);ctx.fill()}}
- for(const side of [-1,1]){const a=at(L*.51,side*B*.31,Z*.58),b=at(-L*.51,side*B*.32,Z*.58);ctx.fillStyle='#f7ecb8';ctx.fillRect(a.x-2,a.y-2,4,3);ctx.fillStyle='#fd6261';ctx.fillRect(b.x-2,b.y-2,4,3)}
- if(type===1){polygon([at(-L*.09,-B*.36,Z+2),at(L*.12,-B*.36,Z+2),at(L*.12,B*.36,Z+2),at(-L*.09,B*.36,Z+2)],'#20282d');}
- if(type===2){line(x-L*.31*c,y-L*.31*s,x-L*.40*c,y-L*.40*s,'#c4d4d344',2,Z+1)}
+
+function car3d(x,y,angle,type,color,scale=1){
+ const premium=typeof type==='number',id=premium?type:-1;
+ const spec=premium?cars[id]:type;
+ const L=spec.length*scale,B=spec.width*scale,Z=spec.height*scale;
+ const c=Math.cos(angle),s=Math.sin(angle);
+ const at=(u,v,z=0)=>pt(x+(u*c-v*s)*scale*0+u*c-v*s,y+u*s+v*c,z);
+ // Local car coordinates have already been scaled in geometry.
+ const P=(u,v,z=0)=>pt(x+u*c-v*s,y+u*s+v*c,z);
+ const body=color||spec.color||'#8996a2';
+ function col(hex,brightness){const n=parseInt(hex.replace('#',''),16);if(!Number.isFinite(n))return hex;
+  let rr=Math.max(0,Math.min(255,((n>>16)&255)*brightness));
+  let gg=Math.max(0,Math.min(255,((n>>8)&255)*brightness));
+  let bb=Math.max(0,Math.min(255,(n&255)*brightness));
+  return 'rgb('+Math.round(rr)+','+Math.round(gg)+','+Math.round(bb)+')'}
+ const bright=col(body,1.4),top=col(body,1.14),dark=col(body,.58),side=col(body,.83);
+ const shape={
+  // [front taper, rear taper, cabin start, cabin end, roof height, glass style]
+  0:[.76,.82,-.18,.22,.94,'coupe'],
+  1:[.82,.88,-.18,.32,.86,'porsche'],
+  2:[.96,.97,-.27,.28,1.05,'suv'],
+  3:[.84,.85,-.22,.19,.97,'sedan'],
+  4:[.67,.92,-.08,.27,.66,'wedge'],
+  5:[.94,.95,-.17,.27,1.03,'limo']
+ }[id]||[.84,.86,-.14,.23,.88,'traffic'];
+ const [frontT,rearT,cabBack,cabFront,roofRise,style]=shape;
+ const bz=Z*.47;
+ const len=L*.5,half=B*.5;
+ const outline=[
+  [-len,-half*rearT],[-len*.83,-half],[-len*.36,-half],
+  [len*.57,-half],[len,-half*frontT],[len,half*frontT],
+  [len*.57,half],[-len*.36,half],[-len*.83,half],[-len,half*rearT]
+ ];
+ const gp=(points,z)=>points.map(q=>P(q[0],q[1],typeof z==='function'?z(q):z));
+ // Contact shadow, flattened underneath wheelbase. Stronger for the player's premium cars.
+ const sh=P(5,7,0);ctx.save();ctx.fillStyle=premium?'#02070dbb':'#01070c77';ctx.shadowColor='#000';ctx.shadowBlur=premium?15:6;
+ ctx.beginPath();ctx.ellipse(sh.x,sh.y,L*.52,B*.62,-.27,0,Math.PI*2);ctx.fill();ctx.restore();
+ // Four real wheels, oriented across the car, with dark arches and silver centers.
+ function wheel(u,v){
+  const hub=P(u,v,Z*.17),up=P(u,v,Z*.32);
+  ctx.save();ctx.fillStyle='#071015';ctx.strokeStyle='#010203';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.ellipse(hub.x,hub.y,Math.max(3.5,6.7*scale),Math.max(3,4.9*scale),-.35,0,Math.PI*2);ctx.fill();ctx.stroke();
+  if(premium){ctx.strokeStyle=id===3?'#c5a96c':'#7d94aa';ctx.lineWidth=1.1;ctx.beginPath();ctx.ellipse(hub.x,hub.y,2.4*scale,1.9*scale,-.35,0,Math.PI*2);ctx.stroke();}
+  ctx.restore();
+ }
+ [-.34,.35].forEach(u=>{wheel(u*L,-half*.97);wheel(u*L,half*.97)});
+ // Lower sill, continuous three-dimensional aerodynamic body.
+ for(let k=0;k<outline.length;k++){
+  const a=outline[k],b=outline[(k+1)%outline.length];
+  const isFront=k===4,isRear=k===9;
+  polygon([P(a[0],a[1],3),P(b[0],b[1],3),P(b[0],b[1],bz),P(a[0],a[1],bz)],
+    isFront?'#131e28':isRear?'#222c36':k<5?dark:side);
+ }
+ polygon(gp(outline,bz),top,'#d7e8ef65',.85);
+ // Hood: broad center ridge and shaped inlet edges.
+ const hoodBack=cabFront*L;
+ polygon([P(hoodBack,-half*.77,bz+.9),P(len*.72,-half*.69,bz+.6),
+ P(len*.79,half*.69,bz+.6),P(hoodBack,half*.77,bz+.9)],col(body,1.3),'#ffffff24',.6);
+ line(x+(-1)*0,y+0,x+0,y+0,'#0000');
+ // Premium grille, front splitter, and model-specific headlamp signatures.
+ const grill=(u,w,z,tone)=>{
+  polygon([P(u,-w,z),P(u,w,z),P(u,w,z-4*scale),P(u,-w,z-4*scale)],tone)}
+ grill(len*.985,half*(id===4?.5:.42),bz*.71,id===5?'#d6d9d6':'#11191e');
+ if(id===5){for(let j=-4;j<=4;j++)line(P(len*.994,j*half*.085,bz*.88).x,P(len*.994,j*half*.085,bz*.88).y,P(len*.994,j*half*.085,bz*.53).x,P(len*.994,j*half*.085,bz*.53).y,'#c3c9c6',1.1);}
+ if(id===3){grill(len*.98,half*.2,bz*.79,'#0c1517')}
+ const frontLight=id===4?'#f5fff7':id===1?'#fff9d0':id===2?'#f0ebdc':'#dffaff';
+ for(const sign of [-1,1]){
+  const lp=P(len*.89,sign*half*.72,bz*.9);
+  ctx.save();ctx.shadowColor=frontLight;ctx.shadowBlur=premium?9:2;ctx.fillStyle=frontLight;
+  ctx.beginPath();ctx.ellipse(lp.x,lp.y,id===1?4.1*scale:3.7*scale,id===1?3.3*scale:1.8*scale,.15,0,Math.PI*2);ctx.fill();ctx.restore();
+  const rp=P(-len*.96,sign*half*.72,bz*.86);
+  ctx.save();ctx.shadowColor='#ff2534';ctx.shadowBlur=premium?8:2;ctx.fillStyle='#f43643';
+  ctx.fillRect(rp.x-3.2*scale,rp.y-1.2*scale,6.4*scale,2.3*scale);ctx.restore();
+ }
+ // Body side crease and door cuts (still visible at mobile resolution).
+ for(const sign of [-1,1]){
+  const q=P(-len*.50,sign*half,bz*.83),v=P(len*.52,sign*half,bz*.83);
+  ctx.beginPath();ctx.moveTo(q.x,q.y);ctx.lineTo(v.x,v.y);ctx.strokeStyle='#f7f8f766';ctx.lineWidth=premium?1.4:.7;ctx.stroke();
+  const door=P((cabBack+cabFront)*L*.35,sign*half,bz*.77),doorB=P((cabBack+cabFront)*L*.35,sign*half,bz*.25);
+  ctx.beginPath();ctx.moveTo(door.x,door.y);ctx.lineTo(doorB.x,doorB.y);ctx.strokeStyle='#04111d77';ctx.lineWidth=1;ctx.stroke();
+ }
+ // Raised passenger compartment. Sloping roof for sports cars, boxy windows for G63/Phantom.
+ const rearX=cabBack*L,frontX=cabFront*L;
+ const roofB=half*(style==='suv'?.84:style==='limo'?.77:.65);
+ const roofZ=bz+Z*(style==='suv'?.68:style==='limo'?.59:roofRise*.53);
+ const rearRoofX=style==='suv'?rearX+L*.02:rearX+L*.11;
+ const frontRoofX=style==='suv'?frontX-L*.01:frontX-L*(style==='wedge'?.06:.11);
+ const windows='#152938',windowGlint='#56859a';
+ // Rear window
+ polygon([P(rearX,-half*.77,bz+1),P(rearX,half*.77,bz+1),
+ P(rearRoofX,roofB,roofZ),P(rearRoofX,-roofB,roofZ)],'#203d4e','#8cb1bd77',.75);
+ // Driver/passenger windows
+ for(const sign of [-1,1]){
+  polygon([P(rearX,sign*half*.82,bz+.8),P(frontX,sign*half*.82,bz+.8),
+ P(frontRoofX,sign*roofB,roofZ),P(rearRoofX,sign*roofB,roofZ)],windows,'#9eb9c47e',.8);
+  // Distinct B pillar.
+  if(style!=='wedge'){const u=style==='limo'?.5:.36;
+   const a=P(rearX+(frontX-rearX)*u,sign*half*.82,bz+.8),b=P(rearRoofX+(frontRoofX-rearRoofX)*u,sign*roofB,roofZ);
+   ctx.strokeStyle='#040b13';ctx.lineWidth=style==='suv'?2.3:1.5;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}
+  // Side mirrors.
+  if(premium){const mirror=P(frontX-L*.12,sign*half*1.08,bz+3);ctx.fillStyle=id===5?'#c4c9ca':dark;ctx.beginPath();ctx.ellipse(mirror.x,mirror.y,3.2,2.3,0,0,Math.PI*2);ctx.fill()}
+ }
+ // Windshield reflects city's cold lighting.
+ polygon([P(frontX,-half*.78,bz+1),P(frontX,half*.78,bz+1),
+ P(frontRoofX,roofB,roofZ),P(frontRoofX,-roofB,roofZ)],windowGlint,'#d6efff73',.8);
+ polygon([P(frontRoofX-.10*L,-roofB*.72,roofZ-.4),P(frontRoofX,-roofB*.5,roofZ-.4),
+ P(frontX,-half*.39,bz+2),P(frontX-L*.09,-half*.53,bz+2)],'#add6e838');
+ polygon([P(rearRoofX,-roofB,roofZ),P(frontRoofX,-roofB,roofZ),
+ P(frontRoofX,roofB,roofZ),P(rearRoofX,roofB,roofZ)],id===2?'#282d31':col(body,style==='wedge'?.66:.87),'#e5f4f96e',.7);
+ // Unique bodywork, roof equipment, intakes, spoilers and grille signatures.
+ if(id===0){ // Midnight GT: long hood with twin sculpted ridges.
+  for(const sign of [-1,1]){const a=P(frontX+4*scale,sign*half*.32,bz+1.2),b=P(len*.75,sign*half*.2,bz+1.2);ctx.strokeStyle='#a5cde088';ctx.lineWidth=1.3;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}
+ }
+ if(id===1){ // Porsche 911: recognizable rear lightbar, broad rear shoulders.
+  const a=P(-len*.96,-half*.73,bz+2),b=P(-len*.96,half*.73,bz+2);ctx.strokeStyle='#ff3548';ctx.shadowColor='#e31d39';ctx.shadowBlur=8;ctx.lineWidth=2.4;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();ctx.shadowBlur=0;
+ }
+ if(id===2){ // G63: flat hood, armored running boards, spare-wheel bulge.
+  for(const sign of [-1,1]){const a=P(-len*.68,sign*half*1.12,3),b=P(len*.58,sign*half*1.12,3);ctx.strokeStyle='#b4bcc1';ctx.lineWidth=2.6;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}
+  const spare=P(-len*1.04,0,bz*.7);ctx.fillStyle='#151a1d';ctx.strokeStyle='#737b80';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(spare.x,spare.y,5.5*scale,5.5*scale,0,0,Math.PI*2);ctx.fill();ctx.stroke();
+ }
+ if(id===3){ // M5 CS: gold rims and dark vent in hood.
+  const a=P(len*.64,-half*.24,bz+1.7),b=P(len*.78,half*.24,bz+1.7);ctx.strokeStyle='#172b25';ctx.lineWidth=2.2;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
+ }
+ if(id===4){ // Aventador SVJ: black side intakes and tall rear wing.
+  for(const sign of [-1,1])polygon([P(-len*.12,sign*half,bz+1),P(len*.18,sign*half,bz+1),
+   P(len*.28,sign*half,bz*.57),P(-len*.1,sign*half,bz*.56)],'#070d14');
+  polygon([P(-len*.86,-half*1.03,roofZ+4*scale),P(-len*.76,-half*1.03,roofZ+4*scale),P(-len*.76,half*1.03,roofZ+4*scale),P(-len*.86,half*1.03,roofZ+4*scale)],'#111418','#b4c2c755');
+ }
+ if(id===5){ // Phantom: silver bonnet centerline and refined contrasting window frame.
+  const a=P(frontX,0,bz+2),b=P(len*.89,0,bz+2);ctx.strokeStyle='#d4dadd77';ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
+  const spirit=P(len*.92,0,bz+3);ctx.fillStyle='#e7e6dd';ctx.fillRect(spirit.x-1,spirit.y-3,2,4);
+ }
+ if(premium){ // Tailored metal highlights make owned cars distinct from traffic.
+  ctx.save();const a=P(-len*.7,-half*.83,bz+1.6),b=P(len*.59,-half*.86,bz+1.6);
+  ctx.strokeStyle='#ffffff57';ctx.lineWidth=1.25;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();ctx.restore();
+ }
 }
+
 function drawMarker(o){let p=pt(o.x,o.y,now%3*3+10);const active=o.type==='start'&&mission===0;const color=o.type==='start'?'#e2b765':o.type==='garage'?'#65d4c3':'#94b7ef';ctx.save();ctx.shadowBlur=20;ctx.shadowColor=color;ctx.strokeStyle=color;ctx.lineWidth=2.5;ctx.beginPath();ctx.ellipse(p.x,p.y+12,22,10,0,0,Math.PI*2);ctx.stroke();ctx.fillStyle=color;ctx.beginPath();ctx.arc(p.x,p.y-5,active?10:7,0,Math.PI*2);ctx.fill();ctx.restore();ctx.textAlign='center';ctx.fillStyle='#f5e3bb';ctx.font='bold 10px system-ui';ctx.shadowColor='#000';ctx.shadowBlur=6;ctx.fillText(o.name,p.x,p.y-27);ctx.shadowBlur=0}
 function drawCharacter(p,i){const a=pt(p.x,p.y),b=pt(p.x,p.y,14);ctx.strokeStyle=['#bacddd','#ddae85','#b2bea9'][i%3];ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();ctx.fillStyle='#ebc3a2';ctx.beginPath();ctx.arc(b.x,b.y-3,3,0,Math.PI*2);ctx.fill()}
 function drawScene(){ctx.clearRect(0,0,W,H);ground();
  const items=[];for(let i=0;i<buildings.length;i++)items.push({d:buildings[i].x+buildings[i].y+buildings[i].w+buildings[i].h,kind:'building',v:buildings[i]});
  for(let i=0;i<traffic.length;i++)items.push({d:traffic[i].x+traffic[i].y,kind:'traffic',v:traffic[i]});for(let i=0;i<pedestrians.length;i++)items.push({d:pedestrians[i].x+pedestrians[i].y,kind:'ped',v:pedestrians[i],i});
  for(let i=0;i<police.length;i++)items.push({d:police[i].x+police[i].y,kind:'police',v:police[i]});if(convoy&&missionStage>=2&&missionStage<=3)items.push({d:convoy.x+convoy.y,kind:'convoy',v:convoy});items.push({d:player.x+player.y,kind:'player'});
- items.sort((a,b)=>a.d-b.d);for(const it of items){if(it.kind==='building')drawBuilding(it.v);else if(it.kind==='ped')drawCharacter(it.v,it.i);else if(it.kind==='traffic'){let t=it.v;car3d(t.x,t.y,t.axis==='y'?(t.dir>0?Math.PI/2:-Math.PI/2):(t.dir>0?0:Math.PI),{length:58,width:28,height:17},t.color,.8)}else if(it.kind==='police'){let t=it.v;car3d(t.x,t.y,t.angle,{length:62,width:31,height:21},'#e0e4e7',.85);let pp=pt(t.x,t.y,22);ctx.fillStyle=now%0.5<.25?'#ff354a':'#3e8bff';ctx.fillRect(pp.x-4,pp.y-3,9,4)}else if(it.kind==='convoy'){const t=it.v;car3d(t.x,t.y,t.angle,{length:100,width:43,height:39},'#8b989f',1);let q=pt(t.x,t.y,43);ctx.fillStyle='#f4d28b';ctx.font='bold 10px system-ui';ctx.textAlign='center';ctx.fillText('ARMORED',q.x,q.y-16)}else if(it.kind==='player'){car3d(player.x,player.y,player.angle,player.car,cars[player.car].color)}}
+ items.sort((a,b)=>a.d-b.d);for(const it of items){if(it.kind==='building')drawBuilding(it.v);else if(it.kind==='ped')drawCharacter(it.v,it.i);else if(it.kind==='traffic'){let t=it.v;car3d(t.x,t.y,t.axis==='y'?(t.dir>0?Math.PI/2:-Math.PI/2):(t.dir>0?0:Math.PI),{length:58,width:28,height:17},t.color,.8)}else if(it.kind==='police'){let t=it.v;car3d(t.x,t.y,t.angle,{length:62,width:31,height:21},'#e0e4e7',.85);let pp=pt(t.x,t.y,22);ctx.fillStyle=now%0.5<.25?'#ff354a':'#3e8bff';ctx.fillRect(pp.x-4,pp.y-3,9,4)}else if(it.kind==='convoy'){const t=it.v;car3d(t.x,t.y,t.angle,{length:100,width:43,height:39},'#8b989f',1);let q=pt(t.x,t.y,43);ctx.fillStyle='#f4d28b';ctx.font='bold 10px system-ui';ctx.textAlign='center';ctx.fillText('ARMORED',q.x,q.y-16)}else if(it.kind==='player'){car3d(player.x,player.y,player.angle,player.car,cars[player.car].color,1.24)}}
  // A location ring stays visible even when an isometric facade occludes the vehicle.
  {const p=pt(player.x,player.y,24);ctx.save();ctx.strokeStyle='#ffd27e';ctx.lineWidth=2;ctx.setLineDash([5,4]);ctx.shadowColor='#ffc768';ctx.shadowBlur=8;ctx.beginPath();ctx.ellipse(p.x,p.y+12,27,13,0,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#fff0be';ctx.beginPath();ctx.arc(p.x,p.y-10,3.6,0,Math.PI*2);ctx.fill();ctx.restore();}
  for(const o of objects)drawMarker(o);
