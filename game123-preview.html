@@ -741,7 +741,7 @@ function addArchipelago123(){
  for(const y of ey)roads.push({type:'h',x:5640,y:y-77,w:2360,h:154});
  for(const x of sx)roads.push({type:'v',x:x-77,y:5760,w:154,h:1840});
  for(const y of sy)roads.push({type:'h',x:0,y:y-77,w:6900,h:154});
- for(const b of BRIDGES123)roads.push({type:b.kind,x:b.x,y:b.y,w:b.w,h:b.h,bridge123:true});
+ for(const b of BRIDGES123)roads.push({type:b.kind,x:b.x-(b.kind==='h'?110:0),y:b.y-(b.kind==='v'?110:0),w:b.w+(b.kind==='h'?220:0),h:b.h+(b.kind==='v'?220:0),bridge123:true});
  const fill=(r,xs,ys,zone)=>{
   const xx=[r.x,...xs,r.x+r.w],yy=[r.y,...ys,r.y+r.h];
   for(let j=0;j<yy.length-1;j++)for(let i=0;i<xx.length-1;i++){
