@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, user-scalable=no">
 <meta name="theme-color" content="#08121e">
-<title>SKORBININ: CRIME CITY 12.4 · НАБЕРЕЖНЫЕ</title>
+<title>SKORBININ: CRIME CITY 12.4.1 · БЕРЕГОВАЯ ЛИНИЯ</title>
 <style>
 :root{color-scheme:dark}
 *{box-sizing:border-box}
@@ -304,7 +304,7 @@ function drawWaterfront(t){
  const x=CANAL.x,w=CANAL.w;
  ctx.fillStyle='#66747b';ctx.fillRect(x-31,0,17,4560);ctx.fillRect(x+w+14,0,17,4560);
  ctx.fillStyle='#142f40';ctx.fillRect(x,0,w,4560);
- const water=ctx.createLinearGradient(x,0,x+w,0);water.addColorStop(0,'#164254');water.addColorStop(.5,'#20576a');water.addColorStop(1,'#0a2b40');ctx.fillStyle=water;ctx.fillRect(x,0,w,world.h);
+ const water=ctx.createLinearGradient(x,0,x+w,0);water.addColorStop(0,'#164254');water.addColorStop(.5,'#20576a');water.addColorStop(1,'#0a2b40');ctx.fillStyle=water;ctx.fillRect(x,0,w,4560);
  for(let y=20;y<4560;y+=44){
   const offset=6*Math.sin(t*.0008+y*.02);
   ctx.strokeStyle=y%3===0?'#b0c5ad36':'#57a5c04a';ctx.lineWidth=1.5;
@@ -781,33 +781,45 @@ const COAST124=[
  {side:'north',x:0,y:5760,len:6900,pass:2200,color:'#53734e',pass2:6020}
 ];
 function onCoastBridge124(c,pos){return Math.abs(pos-c.pass)<95||(c.pass2!==undefined&&Math.abs(pos-c.pass2)<95)}
+// 12.4.1 shore: green is an OUTWARD embankment on the water side.
+// Never paint grass onto existing drivable roads or their markings.
 function drawCoast124(t){
  ctx.save();
+ const width=54,tile=28;
  for(const c of COAST124){
-  const horizontal=c.side==='south'||c.side==='north',start=horizontal?c.x:c.y;
-  const tiles=Math.ceil(c.len/28);
+  const horizontal=c.side==='south'||c.side==='north';
+  const origin=horizontal?c.x:c.y,tiles=Math.ceil(c.len/tile);
   for(let i=0;i<tiles;i++){
-   const pos=start+i*28+14;
-   if(onCoastBridge124(c,pos))continue;
-   const x=horizontal?start+i*28:c.side==='west'?c.x:c.x-56;
-   const y=horizontal?(c.side==='south'?c.y-56:c.y):start+i*28;
-   const w=horizontal?Math.min(28,c.len-i*28):56,h=horizontal?56:Math.min(28,c.len-i*28);
+   const p=origin+i*tile,step=Math.min(tile,c.len-i*tile),center=p+step/2;
+   if(onCoastBridge124(c,center))continue;
+   let x,y,w,h;
+   if(c.side==='south'){x=p;y=c.y;w=step;h=width}
+   else if(c.side==='north'){x=p;y=c.y-width;w=step;h=width}
+   else if(c.side==='east'){x=c.x;y=p;w=width;h=step}
+   else{x=c.x-width;y=p;w=width;h=step}
    ctx.fillStyle=c.color;ctx.fillRect(x,y,w,h);
-   ctx.fillStyle='#7e9f76';if(i%3===0)ctx.fillRect(x+(horizontal?4:17),y+(horizontal?19:4),horizontal?6:9,horizontal?9:6);
+   ctx.fillStyle='#719c72';
+   if(i%3===0){if(horizontal)ctx.fillRect(x+Math.min(5,w/3),y+19,Math.min(8,w/2),10);
+   else ctx.fillRect(x+19,y+Math.min(5,h/3),10,Math.min(8,h/2))}
   }
-  // Raised sea wall follows the actual bank. Bridge mouths are kept open.
-  ctx.lineWidth=7;ctx.strokeStyle='#a2aca2';ctx.beginPath();
-  for(let i=0;i<=c.len;i+=14){
-   const pos=start+i;
-   if(onCoastBridge124(c,pos)){ctx.stroke();ctx.beginPath();continue}
-   if(horizontal){const xx=pos,yy=c.y+(c.side==='south'?-5:5);ctx.moveTo(xx,yy);ctx.lineTo(xx+14,yy)}
-   else {const yy=pos,xx=c.x+(c.side==='west'?5:-5);ctx.moveTo(xx,yy);ctx.lineTo(xx,yy+14)}
+  // Two solid sea-wall borders and visible embankment paving, with open bridge mouths.
+  ctx.lineWidth=5;ctx.strokeStyle='#b5bcb5';
+  for(let i=0;i<c.len;i+=tile){
+   const p=origin+i*tile,step=Math.min(tile,c.len-i*tile);
+   if(onCoastBridge124(c,p+step/2))continue;
+   ctx.beginPath();
+   if(c.side==='south'||c.side==='north'){
+    const yy=c.y+(c.side==='south'?width:-width);
+    ctx.moveTo(p,yy);ctx.lineTo(p+step,yy);
+   } else{
+    const xx=c.x+(c.side==='east'?width:-width);
+    ctx.moveTo(xx,p);ctx.lineTo(xx,p+step);
+   }
+   ctx.stroke();
   }
-  ctx.stroke();
  }
  ctx.restore();
 }
-
 function drawIslandDetails123(t){
  for(const b of blocks){
   if(!b.arch123||b.x+b.w<cam.x-20||b.x>cam.x+W+20||b.y+b.h<cam.y-20||b.y>cam.y+H+20)continue;
@@ -2022,7 +2034,7 @@ buildCity();
 selectedMode=3;
 start();
 freeExitBtn.style.display='none';
-objectiveEl.textContent='🌃 CRIME CITY 12.4 · НАБЕРЕЖНЫЕ';
+objectiveEl.textContent='🌃 CRIME CITY 12.4.1 · БЕРЕГОВАЯ ЛИНИЯ';
 updateHUD();
 render(0);
 })();
