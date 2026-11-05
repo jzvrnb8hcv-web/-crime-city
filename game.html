@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, user-scalable=no">
 <meta name="theme-color" content="#08121e">
-<title>SKORBININ: CRIME CITY 12.3 · АРХИПЕЛАГ</title>
+<title>SKORBININ: CRIME CITY 12.4 · НАБЕРЕЖНЫЕ</title>
 <style>
 :root{color-scheme:dark}
 *{box-sizing:border-box}
@@ -77,7 +77,7 @@ h2{font-size:30px;line-height:1.1;margin:12px 0 8px}
 /* Persistent in-app backup and owner recovery controls */
 #saveToolsBtn{position:fixed;left:auto;right:12px;top:calc(env(safe-area-inset-top) + 192px);z-index:10;padding:7px 9px;font-size:10px;opacity:.75;background:#122b42ed;color:#f2d7a6;border:1px solid #d7a76588;border-radius:15px;font-weight:800;box-shadow:0 4px 15px #0008;cursor:pointer}
 #story12hud{display:none!important}
-#saveToolsBtn{display:none!important}#ccMenuBtn{position:fixed;right:12px;top:calc(env(safe-area-inset-top) + 177px);z-index:18;background:#132b42;color:#fbe0a9;border:1px solid #d4ac6988;border-radius:14px;padding:11px 13px;font-weight:850;font-size:12px}#ccMenuPanel{display:none;position:fixed;z-index:92;inset:0;background:#04101deb;align-items:center;justify-content:center;padding:20px}#ccMenuPanel.open{display:flex}#ccMenuInner{width:min(94vw,440px);background:#10263b;border:1px solid #cba963;border-radius:19px;padding:20px;color:#f5e3be;max-height:90vh;overflow:auto}#ccMenuInner button{display:block;width:100%;margin:10px 0;padding:13px;color:#fff0d1;border:1px solid #cca467;background:#1c3950;border-radius:11px;font-weight:800}
+#saveToolsBtn{display:none!important}#soundBtn,#livingWeather{display:none!important}#ccMenuBtn{position:fixed;right:12px;top:calc(env(safe-area-inset-top) + 177px);z-index:18;background:#132b42;color:#fbe0a9;border:1px solid #d4ac6988;border-radius:14px;padding:11px 13px;font-weight:850;font-size:12px}#ccMenuPanel{display:none;position:fixed;z-index:92;inset:0;background:#04101deb;align-items:center;justify-content:center;padding:20px}#ccMenuPanel.open{display:flex}#ccMenuInner{width:min(94vw,440px);background:#10263b;border:1px solid #cba963;border-radius:19px;padding:20px;color:#f5e3be;max-height:90vh;overflow:auto}#ccMenuInner button{display:block;width:100%;margin:10px 0;padding:13px;color:#fff0d1;border:1px solid #cca467;background:#1c3950;border-radius:11px;font-weight:800}
 #saveToolsModal{display:none;position:fixed;inset:0;z-index:90;background:#050b16f2;align-items:center;justify-content:center;padding:18px;overflow:auto}
 #saveToolsModal.open{display:flex}
 #saveToolsInner{background:#102033;color:#eaf0fa;border:1px solid #cba76177;border-radius:22px;padding:18px;max-width:480px;width:100%;box-shadow:0 12px 48px #000a;max-height:90vh;overflow:auto}
@@ -157,7 +157,7 @@ h2{font-size:30px;line-height:1.1;margin:12px 0 8px}
 <button id="saveToolsClose" type="button">ВЕРНУТЬСЯ В ИГРУ</button>
 <p id="saveToolsStatus" aria-live="polite" style="font-size:13px;color:#ffdd9b"></p>
 </div></div>
-<button id="ccMenuBtn" type="button">☰ МЕНЮ</button><section id="ccMenuPanel" aria-label="Меню игры"><div id="ccMenuInner"><h2>☰ CRIME CITY · МЕНЮ</h2><button id="ccOpenSave" type="button">💾 ПРОГРЕСС · СОХРАНЕНИЯ</button><button id="ccMenuWorld" type="button">🗺 КАРТА РАЙОНОВ</button><button id="ccCloseMenu" type="button">▶ ВЕРНУТЬСЯ В ГОРОД</button><p>Все покупки, недвижимость, автомобили и задания остаются в текущей игре.</p></div></section>
+<button id="ccMenuBtn" type="button">☰ МЕНЮ</button><section id="ccMenuPanel" aria-label="Меню игры"><div id="ccMenuInner"><h2>☰ CRIME CITY · МЕНЮ</h2><button id="ccOpenSave" type="button">💾 ПРОГРЕСС · СОХРАНЕНИЯ</button><button id="ccMenuWorld" type="button">🗺 КАРТА РАЙОНОВ</button><button id="ccMenuSound" type="button">🔊 ЗВУК · ВКЛ</button><button id="ccMenuWeather" type="button">☀️ ПОГОДА · СУХО</button><button id="ccCloseMenu" type="button">▶ ВЕРНУТЬСЯ В ГОРОД</button><p>Все покупки, недвижимость, автомобили и задания остаются в текущей игре.</p></div></section>
 
 <script>
 (()=>{
@@ -772,6 +772,42 @@ function drawArchipelagoWater123(t){
  }
  ctx.restore();
 }
+
+// 12.4 shoreline. Existing roads/properties and all three 1200-unit bridges remain in place.
+const COAST124=[
+ {side:'south',x:0,y:4560,len:4440,pass:2200,color:'#466a4c'},
+ {side:'west',x:5640,y:0,len:4560,pass:2680,color:'#536a54'},
+ {side:'east',x:4440,y:0,len:4560,pass:2680,color:'#53634e'},
+ {side:'north',x:0,y:5760,len:6900,pass:2200,color:'#53734e',pass2:6020}
+];
+function onCoastBridge124(c,pos){return Math.abs(pos-c.pass)<95||(c.pass2!==undefined&&Math.abs(pos-c.pass2)<95)}
+function drawCoast124(t){
+ ctx.save();
+ for(const c of COAST124){
+  const horizontal=c.side==='south'||c.side==='north',start=horizontal?c.x:c.y;
+  const tiles=Math.ceil(c.len/28);
+  for(let i=0;i<tiles;i++){
+   const pos=start+i*28+14;
+   if(onCoastBridge124(c,pos))continue;
+   const x=horizontal?start+i*28:c.side==='west'?c.x:c.x-56;
+   const y=horizontal?(c.side==='south'?c.y-56:c.y):start+i*28;
+   const w=horizontal?Math.min(28,c.len-i*28):56,h=horizontal?56:Math.min(28,c.len-i*28);
+   ctx.fillStyle=c.color;ctx.fillRect(x,y,w,h);
+   ctx.fillStyle='#7e9f76';if(i%3===0)ctx.fillRect(x+(horizontal?4:17),y+(horizontal?19:4),horizontal?6:9,horizontal?9:6);
+  }
+  // Raised sea wall follows the actual bank. Bridge mouths are kept open.
+  ctx.lineWidth=7;ctx.strokeStyle='#a2aca2';ctx.beginPath();
+  for(let i=0;i<=c.len;i+=14){
+   const pos=start+i;
+   if(onCoastBridge124(c,pos)){ctx.stroke();ctx.beginPath();continue}
+   if(horizontal){const xx=pos,yy=c.y+(c.side==='south'?-5:5);ctx.moveTo(xx,yy);ctx.lineTo(xx+14,yy)}
+   else {const yy=pos,xx=c.x+(c.side==='west'?5:-5);ctx.moveTo(xx,yy);ctx.lineTo(xx,yy+14)}
+  }
+  ctx.stroke();
+ }
+ ctx.restore();
+}
+
 function drawIslandDetails123(t){
  for(const b of blocks){
   if(!b.arch123||b.x+b.w<cam.x-20||b.x>cam.x+W+20||b.y+b.h<cam.y-20||b.y>cam.y+H+20)continue;
@@ -906,6 +942,7 @@ function moveGuardSolid(g,dx,dy){
   return false;
 }
 function isRoad(x,y,p=0){
+  if(cityWaterBlocks(x,y))return false;
   return roads.some(r=>x>r.x-p&&x<r.x+r.w+p&&y>r.y-p&&y<r.y+r.h+p)||onPavement(x,y,Math.max(0,-p));
 }
 function inBlock(x,y,p=0){
@@ -1266,6 +1303,11 @@ function drawRain(t){
 }
 function trafficUpdate(dt){
   for(const car of traffic){
+    // Turn around before a dead-end shore instead of driving into the sea.
+    const lookX=car.x+(car.vertical?0:car.dir*82),lookY=car.y+(car.vertical?car.dir*82:0);
+    if(cityWaterBlocks(lookX,lookY)||!isRoad(lookX,lookY,18)){
+      if(car.coastTurn124!==true){car.dir*=-1;car.coastTurn124=true;car.brake=0;car.blockTimer=0;}
+    }else car.coastTurn124=false;
     const dx=car.vertical?0:car.speed*car.dir*dt;
     const dy=car.vertical?car.speed*car.dir*dt:0;
     const outcome=moveCarSolid(car,dx,dy);
@@ -1815,6 +1857,7 @@ function render(timeMs){
   drawRoadMarkings();
   drawWaterfront(timeMs);
   drawArchipelagoWater123(timeMs);
+  drawCoast124(timeMs);
   drawDistrictGround();
   drawBuildings();
   drawEastsideArchitecture121();
@@ -1979,12 +2022,12 @@ buildCity();
 selectedMode=3;
 start();
 freeExitBtn.style.display='none';
-objectiveEl.textContent='🌃 CRIME CITY 12.3 · АРХИПЕЛАГ';
+objectiveEl.textContent='🌃 CRIME CITY 12.4 · НАБЕРЕЖНЫЕ';
 updateHUD();
 render(0);
 })();
 </script>
 <script>
-(()=>{const menu=document.getElementById('ccMenuPanel'),open=document.getElementById('ccMenuBtn');open.addEventListener('click',()=>menu.classList.add('open'));document.getElementById('ccCloseMenu').onclick=()=>menu.classList.remove('open');document.getElementById('ccOpenSave').onclick=()=>{menu.classList.remove('open');document.getElementById('saveToolsBtn').click()};document.getElementById('ccMenuWorld').onclick=()=>{menu.classList.remove('open');document.getElementById('worldMapBtn')?.click()};})();
+(()=>{const menu=document.getElementById('ccMenuPanel'),open=document.getElementById('ccMenuBtn');open.addEventListener('click',()=>menu.classList.add('open'));document.getElementById('ccCloseMenu').onclick=()=>menu.classList.remove('open');document.getElementById('ccOpenSave').onclick=()=>{menu.classList.remove('open');document.getElementById('saveToolsBtn').click()};document.getElementById('ccMenuWorld').onclick=()=>{menu.classList.remove('open');document.getElementById('worldMapBtn')?.click()};const sound=document.getElementById('ccMenuSound'),weather=document.getElementById('ccMenuWeather');const refresh=()=>{sound.textContent=document.getElementById('soundBtn').textContent.includes('🔇')?'🔇 ЗВУК · ВЫКЛ':'🔊 ЗВУК · ВКЛ';weather.textContent=document.getElementById('livingWeather').textContent.includes('ДОЖДЬ')?'🌧️ ПОГОДА · ДОЖДЬ':'☀️ ПОГОДА · СУХО'};sound.onclick=()=>{document.getElementById('soundBtn').click();refresh()};weather.onclick=()=>{document.getElementById('livingWeather').click();refresh()};open.addEventListener('click',refresh);refresh();})();
 </script></body>
 </html>
