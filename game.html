@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, user-scalable=no">
 <meta name="theme-color" content="#08121e">
-<title>SKORBININ: CRIME CITY 12.4.1 · БЕРЕГОВАЯ ЛИНИЯ</title>
+<title>SKORBININ: CRIME CITY 12.4.2 · БЕРЕГОВАЯ ЛИНИЯ</title>
 <style>
 :root{color-scheme:dark}
 *{box-sizing:border-box}
@@ -297,7 +297,7 @@ function saveCity9(){try{localStorage.setItem('crimecity9',JSON.stringify(empire
 function currentDistrict(x,y){return x<1100?'СТАРЫЙ ЦЕНТР':x>2450?'НАБЕРЕЖНАЯ':y<1400?'ДЕЛОВОЙ РАЙОН':y>2250?'ВИЛЛЫ НА ХОЛМЕ':'НОЧНОЙ КВАРТАЛ';}
 const CANAL={x:2850,w:116};
 function onBridge(x,y){return HROADS.some(v=>Math.abs(y-v)<75);}
-function cityWaterBlocks(x,y){const deck=BRIDGES123.some(b=>x>=b.x&&x<=b.x+b.w&&y>=b.y&&y<=b.y+b.h);const sea=(x>=4440&&x<5640&&y<4560)||(y>=4560&&y<5760)||(x>=6900&&y>=5760);const old=x>CANAL.x&&x<CANAL.x+CANAL.w&&y<4560&&!onBridge(x,y);return !deck&&(sea||old);}
+function cityWaterBlocks(x,y){const deck=BRIDGES123.some(b=>x>=b.x&&x<=b.x+b.w&&y>=b.y&&y<=b.y+b.h);const sea=(x>=4440&&x<5640&&y<4560)||(y>=4560&&y<5760)||(x>=6900&&y>=5760);const old=x>CANAL.x&&x<CANAL.x+CANAL.w&&y<4560&&!onBridge(x,y);return !deck&&(sea||old||isShoreLawn1242(x,y));}
 function drawWaterfront(t){
  ctx.save();
  // Promenade and embankment. Bridges preserve the navigable grid.
@@ -504,6 +504,7 @@ function cityMapDraw(){
  mc.fillStyle='#2d4358';for(const r of roads)mc.fillRect(r.x*scale,r.y*scale,r.w*scale,r.h*scale);
  mc.fillStyle='#0d4a68';mc.fillRect(CANAL.x*scale,0,CANAL.w*scale,h);mc.fillStyle='#466276';for(const y of HROADS)mc.fillRect(CANAL.x*scale,(y-70)*scale,CANAL.w*scale,140*scale);
  mc.fillStyle='#0e5870';mc.fillRect(4440*scale,0,1200*scale,4560*scale);mc.fillRect(0,4560*scale,8000*scale,1200*scale);mc.fillRect(6900*scale,5760*scale,1100*scale,1840*scale);mc.fillStyle='#b9c8c7';for(const b of BRIDGES123)mc.fillRect(b.x*scale,b.y*scale,b.w*scale,b.h*scale);mc.fillStyle='#1a2a39';for(const b of blocks)mc.fillRect(b.x*scale,b.y*scale,b.w*scale,b.h*scale);
+ paintShoreCaps1242(mc,scale,false);
  const mark=(x,y,icon,label,color)=>{mc.beginPath();mc.fillStyle=color;mc.arc(x*scale,y*scale,12,0,7);mc.fill();mc.font='15px system-ui';mc.textAlign='center';mc.fillText(icon,x*scale,y*scale+5);mc.font='bold 10px system-ui';mc.fillStyle='#fff';mc.fillText(label,x*scale,y*scale-17);};
  arch123Labels(mc,scale);
  for(const m of CITY_SERVICES)mark(m.x,m.y,m.icon,m.name,'#27546a');
@@ -729,15 +730,25 @@ function addArchipelago123(){
  const east=ARCH123.east,south=ARCH123.south;
  const ex=[5800,6020,6440,6860,7280,7720],ey=[280,760,1240,1720,2200,2680,3060,3510,3990,4470];
  const sx=[280,760,1240,1720,2200,2680,3060,3530,3970,4460,4940,5420,6020,6500],sy=[5980,6400,6860,7330];
- for(const x of ex)roads.push({type:'v',x:x-77,y:0,w:154,h:4560});
- for(const y of ey)roads.push({type:'h',x:5640,y:y-77,w:2360,h:154});
- for(const x of sx)roads.push({type:'v',x:x-77,y:5760,w:154,h:1840});
- for(const y of sy)roads.push({type:'h',x:0,y:y-77,w:6900,h:154});
+ // End dead-end streets BEFORE the coast. Only the three signed bridge
+ // approaches retain a connection across the water.
+ for(const x of ex)roads.push({type:'v',x:x-77,y:140,w:154,h:(x===6020?4420:4280)});
+ for(const y of ey.filter(v=>v<=3990)){
+  const bridge=y===2680;
+  roads.push({type:'h',x:bridge?5640:5780,y:y-77,w:bridge?2220:2080,h:154});
+ }
+ for(const x of sx){
+  const bridge=x===2200||x===6020;
+  roads.push({type:'v',x:x-77,y:bridge?5760:5900,w:154,h:7460-(bridge?5760:5900)});
+ }
+ for(const y of sy)roads.push({type:'h',x:140,y:y-77,w:6620,h:154});
  for(const b of BRIDGES123)roads.push({type:b.kind,x:b.x-(b.kind==='h'?110:0),y:b.y-(b.kind==='v'?110:0),w:b.w+(b.kind==='h'?220:0),h:b.h+(b.kind==='v'?220:0),bridge123:true});
  const fill=(r,xs,ys,zone)=>{
   const xx=[r.x,...xs,r.x+r.w],yy=[r.y,...ys,r.y+r.h];
   for(let j=0;j<yy.length-1;j++)for(let i=0;i<xx.length-1;i++){
-   const x=xx[i]+(i?93:23),y=yy[j]+(j?93:23),w=xx[i+1]-x-(i===xx.length-2?23:93),h=yy[j+1]-y-(j===yy.length-2?23:93);
+   const x=xx[i]+(i?93:145),y=yy[j]+(j?93:145),
+    w=xx[i+1]-x-(i===xx.length-2?145:93),
+    h=yy[j+1]-y-(j===yy.length-2?145:93);
    if(w<72||h<72)continue;
    const style=(i+j*3)%4,green=zone==='south';
    blocks.push({x,y,w,h,style,roof:green?'#587852':'#405668',win:green?'#f9d59e':'#9dcee2',arch123:true,archZone:zone});
@@ -820,6 +831,69 @@ function drawCoast124(t){
  }
  ctx.restore();
 }
+
+// 12.4.2: cul-de-sac lawns at ALL outer shores of both new islands.
+// Water stays intact. These caps are not roads, not spawn locations and
+// never cover the three real bridges or the protected original city.
+const SHORE_CAPS1242=[
+ {edge:'north',x:5640,y:0,len:2360,grass:'#506a52'},
+ {edge:'east',x:8000,y:0,len:4560,grass:'#536c57'},
+ {edge:'south',x:5640,y:4560,len:2360,grass:'#506a52',bridges:[6020]},
+ {edge:'west',x:5640,y:0,len:4560,grass:'#506a52',bridges:[2680]},
+ {edge:'north',x:0,y:5760,len:6900,grass:'#48744d',bridges:[2200,6020]},
+ {edge:'south',x:0,y:7600,len:6900,grass:'#48744d'},
+ {edge:'east',x:6900,y:5760,len:1840,grass:'#48744d'},
+ {edge:'west',x:0,y:5760,len:1840,grass:'#48744d'}
+];
+function shoreGap1242(edge,pos) {
+ return (edge.bridges||[]).some(v=>Math.abs(pos-v)<105);
+}
+function shoreCapRect1242(edge,pos,len,width=136){
+ if(edge.edge==='north')return {x:pos,y:edge.y,w:len,h:width};
+ if(edge.edge==='south')return {x:pos,y:edge.y-width,w:len,h:width};
+ if(edge.edge==='west')return {x:edge.x,y:pos,w:width,h:len};
+ return {x:edge.x-width,y:pos,w:width,h:len};
+}
+function isShoreLawn1242(x,y){
+ for(const edge of SHORE_CAPS1242){
+  const vertical=edge.edge==='west'||edge.edge==='east';
+  const p=vertical?y:x;
+  const start=vertical?edge.y:edge.x;
+  if(p<start||p>=start+edge.len||shoreGap1242(edge,p))continue;
+  const r=shoreCapRect1242(edge,p,1);
+  if(x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h)return true;
+ }
+ return false;
+}
+function paintShoreCaps1242(target=ctx,scale=1,detail=true){
+ target.save();
+ for(const edge of SHORE_CAPS1242){
+  const vertical=edge.edge==='east'||edge.edge==='west';
+  const start=vertical?edge.y:edge.x;
+  const tile=12;
+  for(let t=0;t<edge.len;t+=tile){
+   const n=Math.min(tile,edge.len-t),p=start+t;
+   if(shoreGap1242(edge,p+n/2))continue;
+   const r=shoreCapRect1242(edge,p,n);
+   target.fillStyle=edge.grass;
+   target.fillRect(r.x*scale,r.y*scale,r.w*scale+.2,r.h*scale+.2);
+   if(detail&&t%72===0){
+    target.fillStyle='#86a986';
+    if(vertical)target.fillRect((r.x+49)*scale,(r.y+3)*scale,8*scale,8*scale);
+    else target.fillRect((r.x+3)*scale,(r.y+52)*scale,8*scale,8*scale);
+   }
+   if(detail){
+    target.fillStyle='#a6aea2';
+    if(edge.edge==='north')target.fillRect(r.x*scale,r.y*scale,r.w*scale,5*scale);
+    else if(edge.edge==='south')target.fillRect(r.x*scale,(edge.y-5)*scale,r.w*scale,5*scale);
+    else if(edge.edge==='west')target.fillRect(r.x*scale,r.y*scale,5*scale,r.h*scale);
+    else target.fillRect((edge.x-5)*scale,r.y*scale,5*scale,r.h*scale);
+   }
+  }
+ }
+ target.restore();
+}
+
 function drawIslandDetails123(t){
  for(const b of blocks){
   if(!b.arch123||b.x+b.w<cam.x-20||b.x>cam.x+W+20||b.y+b.h<cam.y-20||b.y>cam.y+H+20)continue;
@@ -1870,6 +1944,7 @@ function render(timeMs){
   drawWaterfront(timeMs);
   drawArchipelagoWater123(timeMs);
   drawCoast124(timeMs);
+  paintShoreCaps1242(ctx,1,true);
   drawDistrictGround();
   drawBuildings();
   drawEastsideArchitecture121();
@@ -2034,7 +2109,7 @@ buildCity();
 selectedMode=3;
 start();
 freeExitBtn.style.display='none';
-objectiveEl.textContent='🌃 CRIME CITY 12.4.1 · БЕРЕГОВАЯ ЛИНИЯ';
+objectiveEl.textContent='🌃 CRIME CITY 12.4.2 · БЕРЕГОВАЯ ЛИНИЯ';
 updateHUD();
 render(0);
 })();
