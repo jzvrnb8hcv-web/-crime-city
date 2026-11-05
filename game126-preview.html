@@ -781,14 +781,14 @@ function addArchipelago123(){
  // stay vacant. Existing blocks outside both new islands are untouched.
  const overlaps=(a,b,p=17)=>a.x<a.x+a.w&&a.x<b.x+b.w+p&&a.x+a.w>b.x-p&&a.y<b.y+b.h+p&&a.y+a.h>b.y-p;
  const candidates=[];
- for(let j=0;j<10;j++)for(let i=0;i<6;i++){
-  const x=5810+i*348+(j%2)*27,y=225+j*402+(i%2)*27;
-  const w=[190,300,232,270,175,255][(i+j)%6],h=[235,290,200,325,220][(i*3+j)%5];
+ for(let j=0;j<14;j++)for(let i=0;i<8;i++){
+  const x=5810+i*255+(j%3)*17,y=200+j*300+(i%3)*20;
+  const w=[175,225,186,245,165,205][(i+j)%6],h=[185,245,195,270,170][(i*3+j)%5];
   candidates.push({x,y,w,h,zone:'east',kind:(i+3*j)%7});
  }
- for(let j=0;j<4;j++)for(let i=0;i<18;i++){
-  const x=240+i*346+(j%2)*65,y=5900+j*375+(i%3)*14;
-  const w=[178,242,204,276,195][(i+j)%5],h=[166,220,265,190][(i*2+j)%4];
+ for(let j=0;j<6;j++)for(let i=0;i<26;i++){
+  const x=205+i*246+(j%3)*26,y=5900+j*245+(i%3)*13;
+  const w=[145,175,163,201,150][(i+j)%5],h=[145,190,165,205][(i*2+j)%4];
   candidates.push({x,y,w,h,zone:'south',kind:(i+j*2)%7});
  }
  let placed=0;
