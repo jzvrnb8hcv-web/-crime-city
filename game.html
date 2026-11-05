@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, user-scalable=no">
 <meta name="theme-color" content="#08121e">
-<title>SKORBININ: CRIME CITY 12.4.2 · БЕРЕГОВАЯ ЛИНИЯ</title>
+<title>SKORBININ: CRIME CITY 12.4.3 · ПРАВЫЙ ОСТРОВ</title>
 <style>
 :root{color-scheme:dark}
 *{box-sizing:border-box}
@@ -839,7 +839,7 @@ const SHORE_CAPS1242=[
  {edge:'north',x:5640,y:0,len:2360,grass:'#506a52'},
  {edge:'east',x:8000,y:0,len:4560,grass:'#536c57'},
  {edge:'south',x:5640,y:4560,len:2360,grass:'#506a52',bridges:[6020]},
- {edge:'west',x:5640,y:0,len:4560,grass:'#506a52',bridges:[2680]},
+ {edge:'west',x:5640,y:0,len:4560,grass:'#506a52',bridges:[2680],width:72},
  {edge:'north',x:0,y:5760,len:6900,grass:'#48744d',bridges:[2200,6020]},
  {edge:'south',x:0,y:7600,len:6900,grass:'#48744d'},
  {edge:'east',x:6900,y:5760,len:1840,grass:'#48744d'},
@@ -860,7 +860,7 @@ function isShoreLawn1242(x,y){
   const p=vertical?y:x;
   const start=vertical?edge.y:edge.x;
   if(p<start||p>=start+edge.len||shoreGap1242(edge,p))continue;
-  const r=shoreCapRect1242(edge,p,1);
+  const r=shoreCapRect1242(edge,p,1,edge.width||136);
   if(x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h)return true;
  }
  return false;
@@ -874,7 +874,7 @@ function paintShoreCaps1242(target=ctx,scale=1,detail=true){
   for(let t=0;t<edge.len;t+=tile){
    const n=Math.min(tile,edge.len-t),p=start+t;
    if(shoreGap1242(edge,p+n/2))continue;
-   const r=shoreCapRect1242(edge,p,n);
+   const r=shoreCapRect1242(edge,p,n,edge.width||136);
    target.fillStyle=edge.grass;
    target.fillRect(r.x*scale,r.y*scale,r.w*scale+.2,r.h*scale+.2);
    if(detail&&t%72===0){
@@ -2109,7 +2109,7 @@ buildCity();
 selectedMode=3;
 start();
 freeExitBtn.style.display='none';
-objectiveEl.textContent='🌃 CRIME CITY 12.4.2 · БЕРЕГОВАЯ ЛИНИЯ';
+objectiveEl.textContent='🌃 CRIME CITY 12.4.3 · ПРАВЫЙ ОСТРОВ';
 updateHUD();
 render(0);
 })();
